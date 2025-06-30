@@ -1,0 +1,57 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-06-30 15:28:10.022971",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "design_template",
+  "dynamic_fields",
+  "design_attributes"
+ ],
+ "fields": [
+  {
+   "fieldname": "design_template",
+   "fieldtype": "Link",
+   "label": "Design Template",
+   "options": "Item"
+  },
+  {
+   "fieldname": "dynamic_fields",
+   "fieldtype": "HTML",
+   "label": "Dynamic Fields"
+  },
+  {
+   "fieldname": "design_attributes",
+   "fieldtype": "Table",
+   "label": "Design Attributes",
+   "options": "Item Variant Attribute"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-06-30 15:30:49.363817",
+ "modified_by": "Administrator",
+ "module": "CPQ",
+ "name": "Design",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
