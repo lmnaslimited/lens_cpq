@@ -121,12 +121,12 @@ frappe.ui.form.on('Design', {
         frm.set_df_property("dynamic_fields", "options", iRenderHtml);
         frappe.after_ajax(() => {
             const $elDynamicWrapper = $(frm.fields_dict["dynamic_fields"].$wrapper.get(0));
-
             iaFields.forEach(ldField => {
                 const { fieldname, numeric_values } = ldField;
+                const LescapedFieldname = CSS.escape(ldField.fieldname);
                 if (numeric_values) {
-                    const $elRange = $elDynamicWrapper.find(`.range-field[data-fieldname="${fieldname}"]`);
-                    const $elNumber = $elDynamicWrapper.find(`.number-field[data-fieldname="${fieldname}"]`);
+                    const $elRange = $elDynamicWrapper.find(`.range-field[data-fieldname="${LescapedFieldname}"]`);
+                    const $elNumber = $elDynamicWrapper.find(`.number-field[data-fieldname="${LescapedFieldname}"]`);
                     const $elError = $elNumber.next('.text-danger');
 
                     const fnsyncFields = ($elSrc, $elTarget) => {
@@ -140,7 +140,8 @@ frappe.ui.form.on('Design', {
                     $elNumber.on("input", () => fnsyncFields($elNumber, $elRange));
                     $elRange.on("input", () => fnsyncFields($elRange, $elNumber));
                 } else {
-                    $elDynamicWrapper.find(`.select-field[data-fieldname="${fieldname}"]`)
+                    
+                    $elDynamicWrapper.find(`.select-field[data-fieldname="${LescapedFieldname}"]`)
                         .on("change", function () {
                             frm.events.fnUpdateDesignAttribute(frm, fieldname, this.value);
                         });

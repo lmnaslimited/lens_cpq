@@ -1,10 +1,12 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "naming_series:",
  "creation": "2025-06-30 15:28:10.022971",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "naming_series",
   "design_template",
   "dynamic_fields",
   "design_attributes"
@@ -14,6 +16,7 @@
    "fieldname": "design_template",
    "fieldtype": "Link",
    "label": "Design Template",
+   "link_filters": "[[\"Item\",\"has_variants\",\"=\",1]]",
    "options": "Item"
   },
   {
@@ -24,17 +27,26 @@
   {
    "fieldname": "design_attributes",
    "fieldtype": "Table",
+   "hidden": 1,
    "label": "Design Attributes",
    "options": "Item Variant Attribute"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Series",
+   "options": "{design_template.-.###}"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-30 15:30:49.363817",
- "modified_by": "Administrator",
+ "modified": "2025-07-04 10:29:37.455495",
+ "modified_by": "test@lmnas.com",
  "module": "CPQ",
  "name": "Design",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
