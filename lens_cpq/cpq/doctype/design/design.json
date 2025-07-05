@@ -8,8 +8,12 @@
  "field_order": [
   "naming_series",
   "design_template",
+  "column_break_vvrr",
+  "section_break_iuqk",
   "dynamic_fields",
-  "design_attributes"
+  "design_attributes",
+  "item_tab",
+  "item"
  ],
  "fields": [
   {
@@ -37,12 +41,31 @@
    "hidden": 1,
    "label": "Series",
    "options": "{design_template.-.###}"
+  },
+  {
+   "fieldname": "column_break_vvrr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "label": "Item",
+   "options": "Item"
+  },
+  {
+   "fieldname": "section_break_iuqk",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "item_tab",
+   "fieldtype": "Tab Break",
+   "label": "Item"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-04 10:29:37.455495",
+ "modified": "2025-07-04 15:40:06.830738",
  "modified_by": "test@lmnas.com",
  "module": "CPQ",
  "name": "Design",

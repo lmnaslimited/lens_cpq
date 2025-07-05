@@ -4,6 +4,27 @@ frappe.ui.form.on('Design', {
         if (frm.doc.design_template) {
             frm.events.fnFetchAndRenderTemplateFields(frm);
         }
+        if(frm.doc.item){
+            frm.add_custom_button(__("View Item"), function(){
+                frappe.set_route("item", frm.doc.item)
+            })
+        }else{
+            frm.add_custom_button(__("Create Item"), function(){
+                frappe.call({
+                    method:"lens_cpq.cpq.doctype.design.api.fn_create_item_from_design",
+                    args:{
+                        design_name: frm.doc.name
+                    },
+                    callback: function(ldResponse){
+                        if(ldResponse.message){
+                            frm.set_value("item", ldResponse.message)
+                            frm.save()
+                        }
+                        frappe.show_alert("Item is Successfully Created", 5)
+                    }
+                })
+            })
+        }
     },
 
     design_template(frm) {
@@ -42,7 +63,7 @@ frappe.ui.form.on('Design', {
     // Gets the saved value of a specific attribute from the child table
     fnMappingSavedValues(frm, fieldname) {
         const ldValues = (frm.doc.design_attributes || []).find(
-            ldValue => ldValue.attribute.toLowerCase() === fieldname.toLowerCase()
+            ldValue => ldValue.attribute.replace(/ /g, "_").toLowerCase() === fieldname
         );
         return ldValues ? ldValues.attribute_value : null;
     },
@@ -52,8 +73,8 @@ frappe.ui.form.on('Design', {
         return `
             <style id="custom-slider-style">
                 .range-field {
-                    -webkit-appearance: none; width: 100%; height: 5px;
-                    background: #ccc; border-radius: 4px; outline: none; margin-top: 6px;
+                   width: 100%; height: 5px;
+                   border-radius: 4px; outline: none; margin-top: 6px;
                 }
                 .range-field::-webkit-slider-thumb,
                 .range-field::-moz-range-thumb {
@@ -97,7 +118,7 @@ frappe.ui.form.on('Design', {
                                     <select class="select-field form-control input-with-feedback ellipsis"
                                             data-fieldname="{%= ldField.fieldname %}"
                                             style="background-color: #F3F3F3; border-radius: 6px; padding: padding: revert-layer;">
-                                        <option disabled {%= !ldField.lSavedValue ? 'selected' : '' %}>Select {%= ldField.label %}</option>
+                                        <option disabled {%= !ldField.lSavedValue ? 'selected' : '' %}></option>
                                         {% for (var laOption = 0; laOption < ldField.options.length; laOption++) {
                                             var ldOpt = ldField.options[laOption];
                                         %}
@@ -122,8 +143,8 @@ frappe.ui.form.on('Design', {
         frappe.after_ajax(() => {
             const $elDynamicWrapper = $(frm.fields_dict["dynamic_fields"].$wrapper.get(0));
             iaFields.forEach(ldField => {
-                const { fieldname, numeric_values } = ldField;
-                const LescapedFieldname = CSS.escape(ldField.fieldname);
+                const { fieldname, numeric_values, label } = ldField;
+                const LescapedFieldname = CSS.escape(fieldname);
                 if (numeric_values) {
                     const $elRange = $elDynamicWrapper.find(`.range-field[data-fieldname="${LescapedFieldname}"]`);
                     const $elNumber = $elDynamicWrapper.find(`.number-field[data-fieldname="${LescapedFieldname}"]`);
@@ -132,7 +153,7 @@ frappe.ui.form.on('Design', {
                     const fnsyncFields = ($elSrc, $elTarget) => {
                         const lValue = parseFloat($elSrc.val());
                         const lIsValid = frm.events.fnValidateAndUpdateNumericInput(
-                            frm, fieldname, lValue, $elSrc.get(0), $elTarget.get(0), $elError.get(0)
+                            frm, label, lValue, $elSrc.get(0), $elTarget.get(0), $elError.get(0)
                         );
                         if (lIsValid) $elTarget.val(lValue);
                     };
@@ -143,7 +164,7 @@ frappe.ui.form.on('Design', {
                     
                     $elDynamicWrapper.find(`.select-field[data-fieldname="${LescapedFieldname}"]`)
                         .on("change", function () {
-                            frm.events.fnUpdateDesignAttribute(frm, fieldname, this.value);
+                            frm.events.fnUpdateDesignAttribute(frm, label, this.value);
                         });
                 }
             });
@@ -173,8 +194,12 @@ frappe.ui.form.on('Design', {
             lErrorMessage = __("Value is required");
         } else if (iValue < lMin || iValue > lMax) {
             lErrorMessage = __(`Value must be between ${lMin} and ${lMax}`);
-        } else if (Math.abs(((iValue - lMin) / lStep) % 1) > 1e-6) {
+        } else{
+            const lQuotient = (iValue - lMin) / lStep;
+            const isStepValid = Math.abs(lQuotient - Math.round(lQuotient)) < 1e-6;
+            if (!isStepValid) {
             lErrorMessage = __(`Value should increment by ${lStep}`);
+            }
         }
 
         if (lErrorMessage) {
