@@ -1,0 +1,82 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:PS-reference_doctype-####",
+ "creation": "2025-07-16 01:22:33.549778",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "reference_doctype",
+  "child_table_field",
+  "column_break_pdte",
+  "parent_target_field",
+  "child_target_field",
+  "section_break_ttbs",
+  "sequence"
+ ],
+ "fields": [
+  {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "label": "Doctype",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "child_table_field",
+   "fieldtype": "Select",
+   "label": "Apply On Child Table"
+  },
+  {
+   "fieldname": "column_break_pdte",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.reference_doctype",
+   "fieldname": "parent_target_field",
+   "fieldtype": "Select",
+   "label": "Parent Target Field"
+  },
+  {
+   "fieldname": "child_target_field",
+   "fieldtype": "Select",
+   "label": "Child Target Field"
+  },
+  {
+   "fieldname": "section_break_ttbs",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "sequence",
+   "fieldtype": "Table",
+   "label": "Sequence",
+   "options": "Pricing Sequence"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-07-16 01:29:03.579105",
+ "modified_by": "Administrator",
+ "module": "CPQ",
+ "name": "Pricing Structure",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

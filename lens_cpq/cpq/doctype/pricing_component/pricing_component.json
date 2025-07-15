@@ -1,0 +1,106 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:label",
+ "creation": "2025-07-16 01:14:50.055560",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "label",
+  "constant",
+  "is_constant",
+  "section_break_qwem",
+  "condition",
+  "column_break_ohay",
+  "variable_name",
+  "is_dynamic",
+  "api_function",
+  "section_break_gntc",
+  "formula"
+ ],
+ "fields": [
+  {
+   "fieldname": "label",
+   "fieldtype": "Data",
+   "label": "Label",
+   "unique": 1
+  },
+  {
+   "fieldname": "constant",
+   "fieldtype": "Float",
+   "label": "Constant"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_constant",
+   "fieldtype": "Check",
+   "label": "Is Constant"
+  },
+  {
+   "fieldname": "section_break_qwem",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "condition",
+   "fieldtype": "Code",
+   "label": "Condition",
+   "options": "PythonExpression"
+  },
+  {
+   "fieldname": "column_break_ohay",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "variable_name",
+   "fieldtype": "Data",
+   "label": "Variable Name"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_dynamic",
+   "fieldtype": "Check",
+   "label": "Is Dynamic Variable"
+  },
+  {
+   "fieldname": "api_function",
+   "fieldtype": "Data",
+   "label": "API Function"
+  },
+  {
+   "fieldname": "section_break_gntc",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "formula",
+   "fieldtype": "Code",
+   "label": "Formula"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-07-16 01:21:43.141168",
+ "modified_by": "Administrator",
+ "module": "CPQ",
+ "name": "Pricing Component",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

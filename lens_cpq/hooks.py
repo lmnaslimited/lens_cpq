@@ -145,6 +145,12 @@ app_license = "mit"
 # 	}
 # }
 
+doc_events = {
+     "*": {
+        "before_save": "lens_cpq.cpq.doctype.pricing_structure.pricing_structure.fn_dispatch_pricing_if_needed"
+    }
+}
+
 # Scheduled Tasks
 # ---------------
 
