@@ -276,3 +276,6 @@ fixtures = [
 		]
 	}
 ]
+treeviews = [
+	"Chart of Design",
+]
