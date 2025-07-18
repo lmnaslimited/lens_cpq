@@ -258,7 +258,8 @@ fixtures = [
                 (
                     "Item-custom_design",
                     "Opportunity Item-custom_design",
-                    "Quotation Item-custom_design"
+                    "Quotation Item-custom_design",
+                    "Plant Floor-custom_abbreviation"
                 )
             ]
          ]
