@@ -7,7 +7,10 @@
  "engine": "InnoDB",
  "field_order": [
   "field_name",
-  "value"
+  "value",
+  "output_type",
+  "options",
+  "default"
  ],
  "fields": [
   {
@@ -21,13 +24,31 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Value"
+  },
+  {
+   "fieldname": "output_type",
+   "fieldtype": "Select",
+   "label": "Output Type",
+   "options": "Single\nOptions"
+  },
+  {
+   "depends_on": "eval:doc.output_type=='Options'",
+   "fieldname": "options",
+   "fieldtype": "Small Text",
+   "label": "Options"
+  },
+  {
+   "depends_on": "eval:doc.output_type=='Single'",
+   "fieldname": "default",
+   "fieldtype": "Data",
+   "label": "Default"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-07-06 18:17:52.855784",
+ "modified": "2025-07-22 12:02:26.076175",
  "modified_by": "Administrator",
  "module": "CPQ",
  "name": "Output Condition Value",

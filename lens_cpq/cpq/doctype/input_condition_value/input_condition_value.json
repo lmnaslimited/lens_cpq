@@ -7,7 +7,8 @@
  "engine": "InnoDB",
  "field_order": [
   "field_name",
-  "value"
+  "value",
+  "condition"
  ],
  "fields": [
   {
@@ -21,13 +22,18 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Value"
+  },
+  {
+   "fieldname": "condition",
+   "fieldtype": "Code",
+   "label": "Condition"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-07-06 18:17:32.200132",
+ "modified": "2025-07-22 12:02:04.963282",
  "modified_by": "Administrator",
  "module": "CPQ",
  "name": "Input Condition Value",
