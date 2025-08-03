@@ -1,4 +1,5 @@
 import frappe
+from frappe.utils import cint
 
 @frappe.whitelist()
 # Whitelist this function to make it accessible via Frappe client calls (e.g., from JS)
@@ -41,3 +42,38 @@ def get_children(doctype, parent=None, is_root=False, plant_floor=None, **kwargs
 
     # Return the list of nodes to the client
     return la_nodes
+
+
+@frappe.whitelist()
+def add_node(args=None):
+    from frappe.desk.treeview import make_tree_args
+
+    if not args:
+        args = frappe.local.form_dict
+
+    args.doctype = "Chart of Design"
+
+    args = make_tree_args(**args)
+
+    chart = frappe.new_doc("Chart of Design")
+
+    if args.get("ignore_permissions"):
+        chart.flags.ignore_permissions = True
+        args.pop("ignore_permissions")
+
+    chart.update(args)
+
+    if not chart.parent_chart_of_design:
+        chart.parent_chart_of_design = args.get("parent")
+
+    chart.old_parent = ""
+
+    chart.is_group = cint(chart.is_group) or 0
+
+    if cint(chart.get("is_root")):
+        chart.parent_chart_of_design = None
+        chart.flags.ignore_mandatory = True
+
+    chart.insert()
+
+    return chart.name
