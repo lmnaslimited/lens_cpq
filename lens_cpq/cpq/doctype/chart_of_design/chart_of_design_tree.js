@@ -43,6 +43,7 @@ frappe.treeview_settings["Chart of Design"] = {
     // Server method to fetch children nodes
     get_tree_nodes: "lens_cpq.cpq.doctype.chart_of_design.api.get_children",
 
+    // Fields shown in dialog while adding node
     fields: [
         {
             fieldtype: "Check",
@@ -56,6 +57,7 @@ frappe.treeview_settings["Chart of Design"] = {
             label: __("Attribute"),
             options: "Item Attribute",
             reqd: true,
+            // While fetching attribute list - apply filter to show only attributes with non-numeric values
             get_query: function () {
                 return {
                     filters: {
@@ -66,36 +68,53 @@ frappe.treeview_settings["Chart of Design"] = {
         },
     ],
 
+    // Buttons shown in toolbar
     toolbar: [
         {
             label: __("Add Group"),
+
+            // Show button only for expandable nodes
             condition: function (node) {
                 return node.expandable;
             },
+
+            // While clicking - open dialog to add group node
             click: function (node) {
-                const tree = frappe.views.trees["Chart of Design"];
-                tree.make_new_node(node, true);
+                const ldTree = frappe.views.trees["Chart of Design"];
+                ldTree.fnMakeNewNode(node, true);
             },
             btnClass: "hidden-xs",
         },
         {
             label: __("Add Child"),
+
+            // Show button only for expandable nodes
             condition: function (node) {
                 return node.expandable;
             },
+
+            // While clicking - open dialog to add child node
             click: function (node) {
-                const tree = frappe.views.trees["Chart of Design"];
-                tree.make_new_node(node, false);
+                const ldTree = frappe.views.trees["Chart of Design"];
+                ldTree.fnMakeNewNode(node, false);
             },
             btnClass: "hidden-xs",
         },
     ],
 
-    onload: function (treeview) {
-        frappe.treeview_settings["Chart of Design"].treeview = treeview
+    // While treeview loads - store treeview reference and define new node logic
+    onload: function (ldTreeview) {
+        frappe.treeview_settings["Chart of Design"].treeview = ldTreeview;
 
-        treeview.make_new_node = function (parent_node, is_group) {
-            let dialog = new frappe.ui.Dialog({
+        /*
+       * Purpose - Show a dialog to create a new node in the Chart of Design tree.
+       * @iParentNode {Object} - Node under which the new node is added.
+       * @iIsGroup {Boolean} - Flag indicating if the new node is a group (true) or a child (false).
+       * Output - On successful creation, the new node is inserted under the parent and tree is refreshed.
+       */
+        ldTreeview.fnMakeNewNode = function (iParentNode, iIsGroup) {
+            // Open dialog to create new node
+            let lDialog = new frappe.ui.Dialog({
                 title: __("Chart of Design"),
 
                 fields: [
@@ -111,6 +130,8 @@ frappe.treeview_settings["Chart of Design"] = {
                         label: __("Attribute"),
                         options: "Item Attribute",
                         reqd: true,
+
+                        // While fetching attribute list - apply filter to show only attributes with non-numeric values
                         get_query: function () {
                             return {
                                 filters: {
@@ -122,42 +143,44 @@ frappe.treeview_settings["Chart of Design"] = {
                 ],
 
                 primary_action_label: __("Create"),
-                primary_action: (values) => {
-                    console.log("values", values)
+
+                // While clicking create - call server method to create new node
+                primary_action: (idFormValues) => {
                     frappe.call({
-                        method: "lens_cpq.cpq.doctype.chart_of_design.api.add_node",
+                        method: "lens_cpq.cpq.doctype.chart_of_design.api.fn_add_node",
                         args: {
-                            parent: parent_node.label,
-                            attribute: values.attribute,
-                            is_group: values.is_group,
-                            is_root: parent_node.is_root || false
+                            parent: iParentNode.label,
+                            attribute: idFormValues.attribute,
+                            is_group: idFormValues.is_group,
+                            is_root: iParentNode.is_root || false
                         },
-                        callback: function () {
-                            treeview.tree.load_children(parent_node, true);
-                            dialog.hide()
+                        callback: function (ldRes) {
+                            // If no error - reload tree and close dialog
+                            if (!ldRes.exc) {
+                                ldTreeview.tree.load_children(iParentNode, true);
+                                lDialog.hide();
+                            }
                         }
                     });
                 }
             });
 
-            dialog.set_value("is_group", is_group);
+            // Set default is_group value and make read-only
+            lDialog.set_value("is_group", iIsGroup);
+            lDialog.fields_dict.is_group.df.read_only = 1;
+            lDialog.fields_dict.is_group.refresh();
 
-            if (is_group) {
-                dialog.fields_dict.is_group.df.read_only = 1;
-                dialog.fields_dict.is_group.refresh();
-            } else {
-                dialog.fields_dict.is_group.df.hidden = 1;
-                dialog.fields_dict.is_group.refresh();
-
-                dialog.fields_dict.attribute.get_query = function () {
+            // If node is child - remove attribute filter          
+            if (!iIsGroup) {
+                lDialog.fields_dict.attribute.get_query = function () {
                     return {};
                 };
             }
 
-            dialog.show();
-        }
+            // Show dialog
+            lDialog.show();
+        };
     },
-
     // Fields to ignore when determining parent-child relationship
     ignore_fields: ["parent_chart_of_design"]
 };

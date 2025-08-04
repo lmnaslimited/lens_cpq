@@ -43,37 +43,54 @@ def get_children(doctype, parent=None, is_root=False, plant_floor=None, **kwargs
     # Return the list of nodes to the client
     return la_nodes
 
-
+"""
+    Purpose: Adds a new node to the 'Chart of Design' tree structure..
+    @args (dict): Dictionary containing node data. If not provided,
+    data is taken from the request form_dict.
+    Output: The name of the newly created 'Chart of Design' document.
+"""
 @frappe.whitelist()
-def add_node(args=None):
+def fn_add_node(args=None):
     from frappe.desk.treeview import make_tree_args
 
+    # If no args provided explicitly - use form input values
     if not args:
         args = frappe.local.form_dict
 
+    # Set doctype to Chart of Design
     args.doctype = "Chart of Design"
 
+    # Prepare arguments compatible with tree structure
     args = make_tree_args(**args)
 
-    chart = frappe.new_doc("Chart of Design")
+    # Create a new Chart of Design document
+    ld_chart = frappe.new_doc("Chart of Design")
 
+    # If ignore_permissions flag is passed, set it and remove from args
     if args.get("ignore_permissions"):
-        chart.flags.ignore_permissions = True
+        ld_chart.flags.ignore_permissions = True
         args.pop("ignore_permissions")
 
-    chart.update(args)
+    # Update the new document
+    ld_chart.update(args)
 
-    if not chart.parent_chart_of_design:
-        chart.parent_chart_of_design = args.get("parent")
+    # If parent_chart_of_design is not set - assign from args
+    if not ld_chart.parent_chart_of_design:
+        ld_chart.parent_chart_of_design = args.get("parent")
 
-    chart.old_parent = ""
+    # Clear old_parent reference 
+    ld_chart.old_parent = ""
 
-    chart.is_group = cint(chart.is_group) or 0
+    # Ensure is_group is stored as an integer (0 or 1)
+    ld_chart.is_group = cint(ld_chart.is_group) or 0
 
-    if cint(chart.get("is_root")):
-        chart.parent_chart_of_design = None
-        chart.flags.ignore_mandatory = True
+    # If node is marked as root - remove parent and ignore mandatory fields
+    if cint(ld_chart.get("is_root")):
+        ld_chart.parent_chart_of_design = None
+        ld_chart.flags.ignore_mandatory = True
 
-    chart.insert()
+    # Insert the new document into the database
+    ld_chart.insert()
 
-    return chart.name
+    # Return the document name of the newly created node
+    return ld_chart.name
