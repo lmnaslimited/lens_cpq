@@ -100,6 +100,14 @@ frappe.treeview_settings["Chart of Design"] = {
             },
             btnClass: "hidden-xs",
         },
+        {
+            label: __("Edit"),
+            click: function (node) {
+                console.log("node", node.label)
+                frappe.set_route("Form", "Chart of Design", node.label);
+            },
+            btnClass: "hidden-xs",
+        },
     ],
 
     // While treeview loads - store treeview reference and define new node logic
