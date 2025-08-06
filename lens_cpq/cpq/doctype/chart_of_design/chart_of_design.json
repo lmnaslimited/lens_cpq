@@ -14,11 +14,7 @@
   "attribute",
   "abbr",
   "root_abbr",
-  "root_node",
-  "from_range",
-  "to_range",
-  "increment",
-  "attribute_value"
+  "root_node"
  ],
  "fields": [
   {
@@ -80,37 +76,13 @@
    "fieldname": "root_node",
    "fieldtype": "Data",
    "label": "Root Node"
-  },
-  {
-   "fetch_from": "attribute.from_range",
-   "fieldname": "from_range",
-   "fieldtype": "Float",
-   "label": "From Range"
-  },
-  {
-   "fetch_from": "attribute.to_range",
-   "fieldname": "to_range",
-   "fieldtype": "Float",
-   "label": "To Range"
-  },
-  {
-   "fetch_from": "attribute.increment",
-   "fieldname": "increment",
-   "fieldtype": "Float",
-   "label": "Increment"
-  },
-  {
-   "fieldname": "attribute_value",
-   "fieldtype": "Small Text",
-   "label": "Attribute Value",
-   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2025-08-05 12:21:07.252867",
+ "modified": "2025-07-18 15:46:49.153196",
  "modified_by": "Administrator",
  "module": "CPQ",
  "name": "Chart of Design",
