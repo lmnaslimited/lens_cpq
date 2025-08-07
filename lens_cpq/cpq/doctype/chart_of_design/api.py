@@ -5,7 +5,7 @@ from frappe.utils import cint
 # Whitelist this function to make it accessible via Frappe client calls (e.g., from JS)
 # Function to get hierarchical children nodes for a given Doctype, optionally filtered by plant_floor or root
 # Incoming variable on runtime by framework
-def get_children(doctype, parent=None, is_root=False, plant_floor=None, **kwargs):
+def fn_get_children(doctype, parent=None, is_root=False, plant_floor=None, **kwargs):
     
     # Determine the parent field name dynamically (e.g., parent_machine_node)
     l_parent_fieldname = "parent_" + frappe.scrub(doctype)

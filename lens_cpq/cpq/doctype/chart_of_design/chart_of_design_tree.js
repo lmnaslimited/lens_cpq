@@ -41,7 +41,7 @@ frappe.treeview_settings["Chart of Design"] = {
     root_label: "Plant Floor",
 
     // Server method to fetch children nodes
-    get_tree_nodes: "lens_cpq.cpq.doctype.chart_of_design.api.get_children",
+    get_tree_nodes: "lens_cpq.cpq.doctype.chart_of_design.api.fn_get_children",
 
     // Fields shown in dialog while adding node
     fields: [
