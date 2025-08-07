@@ -156,9 +156,9 @@ frappe.treeview_settings["Chart of Design"] = {
                         },
                         callback: function (ldRes) {
                             // If no error - reload tree and close dialog
-                            if (!ldRes.exc) {
+                            if (ldRes) {
                                 ldTreeview.tree.load_children(iParentNode, true);
-                                lDialog.hide();
+                                // lDialog.hide();
                             }
                         }
                     });
