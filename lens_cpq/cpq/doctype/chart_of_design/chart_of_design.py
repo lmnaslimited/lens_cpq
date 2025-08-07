@@ -59,8 +59,20 @@ def fn_generate_chart_of_design_name(i_parent_name, i_attribute):
     Output - Sets/Updates name, root abbreviation, root node and abbreviation fields on the document.
 """
 class ChartofDesign(NestedSet):  
-    def validate(self):
 
+    def before_insert(self):
+        if self.attribute:
+            ld_values = frappe.get_all(
+                "Item Attribute Value",
+                filters={
+                    "parent": self.attribute,
+                    "parenttype": "Item Attribute"
+                },
+                fields=["attribute_value"]
+            )
+            self.attribute_value = "\n".join([i_value.attribute_value for i_value in ld_values])
+    
+    def validate(self):
         # If custom parent field is set then use it as parent
         if self.parent_chart_of_design:
             l_parent = self.parent_chart_of_design
@@ -85,3 +97,6 @@ class ChartofDesign(NestedSet):
         # Set root node if not already set
         if not self.root_node:
             self.root_node = l_root_node
+
+        if self.increment:
+            frappe.throw("Cannot convert numeric attribute to a group node.")
