@@ -23,7 +23,7 @@ def fn_generate_chart_of_design_name(i_parent_name, i_attribute):
         ld_cod_doc = frappe.get_doc("Chart of Design", i_parent_name)
 
         # Get abbreviation from the parent Chart of Design document
-        l_abbr = ld_cod_doc.abbr
+        l_abbr = ld_cod_doc.root_abbr
 
         # Get root node reference from the parent Chart of Design document
         l_root_node = ld_cod_doc.root_node 
@@ -85,7 +85,3 @@ class ChartofDesign(NestedSet):
         # Set root node if not already set
         if not self.root_node:
             self.root_node = l_root_node
-
-        # Set abbreviation if not already set
-        if not self.abbr:
-            self.abbr = l_root_abbr
