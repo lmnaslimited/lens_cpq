@@ -98,5 +98,5 @@ class ChartofDesign(NestedSet):
         if not self.root_node:
             self.root_node = l_root_node
 
-        if self.increment:
+        if self.is_group and self.increment:
             frappe.throw("Cannot convert numeric attribute to a group node.")
