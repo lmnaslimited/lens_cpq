@@ -54,13 +54,10 @@ def fn_generate_chart_of_design_name(i_parent_name, i_attribute):
     return l_name, l_abbr, l_root_node
 
 
-"""
-    Purpose - Validate and set key fields before saving Chart of Design node.
-    Output - Sets/Updates name, root abbreviation, root node and abbreviation fields on the document.
-"""
 class ChartofDesign(NestedSet):  
 
     def before_insert(self):
+        # Populate attribute_value with all values from Item Attribute
         if self.attribute:
             ld_values = frappe.get_all(
                 "Item Attribute Value",
@@ -70,6 +67,7 @@ class ChartofDesign(NestedSet):
                 },
                 fields=["attribute_value"]
             )
+            # Join all values into a newline-separated string
             self.attribute_value = "\n".join([i_value.attribute_value for i_value in ld_values])
     
     def validate(self):
@@ -98,5 +96,6 @@ class ChartofDesign(NestedSet):
         if not self.root_node:
             self.root_node = l_root_node
 
+        # Prevent numeric attributes from being set as group nodes
         if self.is_group and self.increment:
             frappe.throw("Cannot convert numeric attribute to a group node.")

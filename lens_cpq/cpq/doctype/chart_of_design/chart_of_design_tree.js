@@ -102,6 +102,13 @@ frappe.treeview_settings["Chart of Design"] = {
         },
         {
             label: __("Edit"),
+
+            // Show only for non-root nodes
+            condition: function (node) {
+                return !node.is_root;
+            },
+
+            // Open the form view of the selected node
             click: function (node) {
                 frappe.set_route("Form", "Chart of Design", node.label);
             },

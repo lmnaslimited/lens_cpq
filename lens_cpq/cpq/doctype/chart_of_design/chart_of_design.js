@@ -23,7 +23,7 @@ frappe.ui.form.on("Chart of Design", {
                     }
                 },
                 callback: function (res) {
-                    if (res.message === 0) {
+                    if (res.message == 0) {
                         frm.add_custom_button(__('Convert to Child'), function () {
                             frm.set_value('is_group', 0);
                             frm.save();
