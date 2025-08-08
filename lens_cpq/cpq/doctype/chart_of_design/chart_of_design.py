@@ -27,13 +27,9 @@ def fn_generate_chart_of_design_name(i_parent_name, i_attribute):
 
     # Check if parent exists as a Plant Floor node
     elif l_plant_floor_exists:
-        [l_abbr] = frappe.db.get_value(
-            "Plant Floor",
-            {"name": i_parent_name},
-            ["custom_abbreviation"]
-        )
+        l_abbr = frappe.db.get_value("Plant Floor", {"name": i_parent_name}, ["custom_abbreviation"])
         l_root_node = i_parent_name
- 
+    
     else:
         # Throw error if parent not found in either doctype
         frappe.throw(_("Parent node not found in Chart Of Design or Plant Floor"))
