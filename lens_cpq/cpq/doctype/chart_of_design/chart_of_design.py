@@ -19,26 +19,17 @@ def fn_generate_chart_of_design_name(i_parent_name, i_attribute):
 
     # Check if parent exists as a Chart of Design node
     if l_cod_exists:
-        # Fetch the Chart of Design parent document
-        ld_cod_doc = frappe.get_doc("Chart of Design", i_parent_name)
-
-        # Get abbreviation from the parent Chart of Design document
-        l_abbr = ld_cod_doc.root_abbr
-
-        # Get root node reference from the parent Chart of Design document
-        l_root_node = ld_cod_doc.root_node 
+        [l_abbr, l_root_node] = frappe.db.get_value(
+            "Chart of Design", 
+            {"name": i_parent_name},
+            ["root_abbr", "root_node"]
+        )
 
     # Check if parent exists as a Plant Floor node
     elif l_plant_floor_exists:
-        # Fetch the Plant Floor parent document
-        ld_plant_floor_doc = frappe.get_doc("Plant Floor", i_parent_name)
-
-        # Get custom abbreviation from the Plant Floor document
-        l_abbr = ld_plant_floor_doc.custom_abbreviation
-
-        # Since parent is Plant Floor, root node is the parent itself
+        l_abbr = frappe.db.get_value("Plant Floor", {"name": i_parent_name}, ["custom_abbreviation"])
         l_root_node = i_parent_name
-
+    
     else:
         # Throw error if parent not found in either doctype
         frappe.throw(_("Parent node not found in Chart Of Design or Plant Floor"))
@@ -54,13 +45,23 @@ def fn_generate_chart_of_design_name(i_parent_name, i_attribute):
     return l_name, l_abbr, l_root_node
 
 
-"""
-    Purpose - Validate and set key fields before saving Chart of Design node.
-    Output - Sets/Updates name, root abbreviation, root node and abbreviation fields on the document.
-"""
 class ChartofDesign(NestedSet):  
-    def validate(self):
 
+    def before_insert(self):
+        # Populate attribute_value with all values from Item Attribute
+        if self.attribute:
+            ld_values = frappe.get_all(
+                "Item Attribute Value",
+                filters={
+                    "parent": self.attribute,
+                    "parenttype": "Item Attribute"
+                },
+                fields=["attribute_value"]
+            )
+            # Join all values into a newline-separated string
+            self.attribute_value = "\n".join([i_value.attribute_value for i_value in ld_values])
+    
+    def validate(self):
         # If custom parent field is set then use it as parent
         if self.parent_chart_of_design:
             l_parent = self.parent_chart_of_design
@@ -85,3 +86,7 @@ class ChartofDesign(NestedSet):
         # Set root node if not already set
         if not self.root_node:
             self.root_node = l_root_node
+
+        # Prevent numeric attributes from being set as group nodes
+        if self.is_group and self.increment:
+            frappe.throw("Cannot convert numeric attribute to a group node.")

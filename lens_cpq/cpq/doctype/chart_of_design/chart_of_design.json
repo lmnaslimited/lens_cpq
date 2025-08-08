@@ -6,15 +6,19 @@
  "engine": "InnoDB",
  "field_order": [
   "section_break_ruju",
-  "lft",
-  "rgt",
   "is_group",
   "old_parent",
   "parent_chart_of_design",
-  "attribute",
-  "abbr",
   "root_abbr",
-  "root_node"
+  "root_node",
+  "column_break_huys",
+  "attribute",
+  "from_range",
+  "to_range",
+  "increment",
+  "attribute_value",
+  "lft",
+  "rgt"
  ],
  "fields": [
   {
@@ -41,7 +45,8 @@
    "default": "0",
    "fieldname": "is_group",
    "fieldtype": "Check",
-   "label": "Is Group"
+   "label": "Is Group",
+   "read_only": 1
   },
   {
    "fieldname": "old_parent",
@@ -63,11 +68,6 @@
    "options": "Item Attribute"
   },
   {
-   "fieldname": "abbr",
-   "fieldtype": "Data",
-   "label": "Abbreviation"
-  },
-  {
    "fieldname": "root_abbr",
    "fieldtype": "Data",
    "label": "Root Abbr"
@@ -76,13 +76,41 @@
    "fieldname": "root_node",
    "fieldtype": "Data",
    "label": "Root Node"
+  },
+  {
+   "fetch_from": "attribute.from_range",
+   "fieldname": "from_range",
+   "fieldtype": "Float",
+   "label": "From Range"
+  },
+  {
+   "fetch_from": "attribute.to_range",
+   "fieldname": "to_range",
+   "fieldtype": "Float",
+   "label": "To Range"
+  },
+  {
+   "fetch_from": "attribute.increment",
+   "fieldname": "increment",
+   "fieldtype": "Float",
+   "label": "Increment"
+  },
+  {
+   "fieldname": "attribute_value",
+   "fieldtype": "Small Text",
+   "label": "Attribute Value",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_huys",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2025-07-18 15:46:49.153196",
+ "modified": "2025-08-08 15:19:11.065409",
  "modified_by": "Administrator",
  "module": "CPQ",
  "name": "Chart of Design",

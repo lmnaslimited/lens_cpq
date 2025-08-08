@@ -100,6 +100,20 @@ frappe.treeview_settings["Chart of Design"] = {
             },
             btnClass: "hidden-xs",
         },
+        {
+            label: __("Edit"),
+
+            // Show only for non-root nodes
+            condition: function (node) {
+                return !node.is_root;
+            },
+
+            // Open the form view of the selected node
+            click: function (node) {
+                frappe.set_route("Form", "Chart of Design", node.label);
+            },
+            btnClass: "hidden-xs",
+        },
     ],
 
     // While treeview loads - store treeview reference and define new node logic
