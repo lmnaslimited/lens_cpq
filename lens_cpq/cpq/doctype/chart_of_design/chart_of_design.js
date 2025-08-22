@@ -3,7 +3,7 @@
 
 frappe.ui.form.on("Chart of Design", {
     refresh(frm) {
-
+        console.log(frm.doc)
         // Show "Convert to Group" for child node which is non numeric attribute
         if (!frm.doc.increment && !frm.doc.is_group == 1) {
             frm.add_custom_button(__('Convert to Group'), function () {
@@ -31,6 +31,15 @@ frappe.ui.form.on("Chart of Design", {
                     }
                 }
             });
+        }
+
+        if (frm.doc.increment == 0 && frm.doc.item_attribute_value.length > 0) {
+            let attribute_values = frm.doc.item_attribute_value
+                .filter(values => values.exclude == 0)
+                .map(values => values.attribute_value);
+
+            // Set all values as options in the select field
+            frm.set_df_property("default_option", "options", attribute_values);
         }
     },
 });
