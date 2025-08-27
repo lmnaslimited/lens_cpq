@@ -33,15 +33,15 @@ frappe.ui.form.on("Chart of Design", {
         }
 
 
-        if (frm.doc.increment == 0 && frm.doc.item_attribute_value.length > 0) {
+        if (frm.doc.increment == 0 && frm.doc.attribute_value.length > 0) {
 
-            let childTableWrapper = frm.fields_dict.item_attribute_value.grid.wrapper
+            let childTableWrapper = frm.fields_dict.attribute_value.grid.wrapper
 
             childTableWrapper.find(".grid-add-row").hide();
 
             childTableWrapper.find(".grid-remove-rows").hide();
 
-            frm.fields_dict.item_attribute_value.grid.grid_rows.forEach(row => {
+            frm.fields_dict.attribute_value.grid.grid_rows.forEach(row => {
 
                 if (row.doc.exclude == 1) {
                     $(row.row).css('background-color', '#FFF3CD');
@@ -51,7 +51,7 @@ frappe.ui.form.on("Chart of Design", {
                 }
             });
 
-            let attribute_values = frm.doc.item_attribute_value
+            let attribute_values = frm.doc.attribute_value
                 .filter(values => values.exclude == 0)
                 .map(values => values.attribute_value);
 

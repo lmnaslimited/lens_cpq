@@ -15,15 +15,14 @@
   "root_node",
   "root_abbr",
   "attribute",
+  "default",
   "section_break_qqkh",
   "from_range",
   "increment",
   "column_break_jvyn",
   "to_range",
-  "default_value",
-  "section_break_nalv",
-  "item_attribute_value",
-  "default"
+  "section_break_dhme",
+  "attribute_value"
  ],
  "fields": [
   {
@@ -106,12 +105,6 @@
    "label": "Increment"
   },
   {
-   "depends_on": "eval:doc.increment > 0",
-   "fieldname": "default_value",
-   "fieldtype": "Data",
-   "label": "Default Value"
-  },
-  {
    "fieldname": "column_break_awty",
    "fieldtype": "Column Break"
   },
@@ -124,14 +117,13 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "section_break_nalv",
+   "fieldname": "section_break_dhme",
    "fieldtype": "Section Break"
   },
   {
-   "depends_on": "eval:doc.increment == 0",
-   "fieldname": "item_attribute_value",
+   "fieldname": "attribute_value",
    "fieldtype": "Table",
-   "label": "Item Attribute Value",
+   "label": "Attribute Value",
    "options": "Item Attribute Value"
   },
   {
@@ -144,7 +136,7 @@
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2025-08-27 12:17:18.386827",
+ "modified": "2025-08-27 14:52:24.191303",
  "modified_by": "Administrator",
  "module": "CPQ",
  "name": "Chart of Design",

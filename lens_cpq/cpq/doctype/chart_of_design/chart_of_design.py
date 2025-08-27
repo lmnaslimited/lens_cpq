@@ -62,7 +62,7 @@ class ChartofDesign(NestedSet):
             )
             for l_values in ld_values:
                 self.append(
-                    "item_attribute_value",
+                    "attribute_value",
                     {
                         "attribute_value":l_values.attribute_value,
                         "abbr":l_values.abbr
