@@ -57,7 +57,8 @@ class ChartofDesign(NestedSet):
                     "parent": self.attribute,
                     "parenttype": "Item Attribute"
                 },
-                fields=["attribute_value","abbr"]
+                fields=["attribute_value","abbr", "idx"],
+                order_by="idx"
             )
             for l_values in ld_values:
                 self.append(
