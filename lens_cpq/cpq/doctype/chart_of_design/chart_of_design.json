@@ -23,7 +23,7 @@
   "default_value",
   "section_break_nalv",
   "item_attribute_value",
-  "default_option"
+  "default"
  ],
  "fields": [
   {
@@ -135,17 +135,16 @@
    "options": "Item Attribute Value"
   },
   {
-   "depends_on": "eval:doc.increment == 0",
-   "fieldname": "default_option",
-   "fieldtype": "Select",
-   "label": "Default Option"
+   "fieldname": "default",
+   "fieldtype": "HTML",
+   "label": "Default"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2025-08-22 13:12:18.733031",
+ "modified": "2025-08-27 12:17:18.386827",
  "modified_by": "Administrator",
  "module": "CPQ",
  "name": "Chart of Design",
