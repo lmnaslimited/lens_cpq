@@ -27,6 +27,7 @@
    "search_index": 1
   },
   {
+   "columns": 2,
    "default": "0",
    "fieldname": "exclude",
    "fieldtype": "Check",
@@ -38,7 +39,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-08-26 14:49:23.777106",
+ "modified": "2025-08-28 11:46:39.075030",
  "modified_by": "Administrator",
  "module": "CPQ",
  "name": "CPQ Item Attribute Value",

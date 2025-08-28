@@ -15,7 +15,6 @@
   "root_node",
   "root_abbr",
   "attribute",
-  "default",
   "section_break_qqkh",
   "from_range",
   "increment",
@@ -125,18 +124,13 @@
    "fieldtype": "Table",
    "label": "Attribute Value",
    "options": "Item Attribute Value"
-  },
-  {
-   "fieldname": "default",
-   "fieldtype": "HTML",
-   "label": "Default"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2025-08-27 14:52:24.191303",
+ "modified": "2025-08-28 11:46:58.991945",
  "modified_by": "Administrator",
  "module": "CPQ",
  "name": "Chart of Design",
