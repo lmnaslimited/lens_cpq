@@ -10,11 +10,13 @@
   "is_group",
   "parent_chart_of_design",
   "old_parent",
+  "default_value",
   "column_break_awty",
   "rgt",
   "root_node",
   "root_abbr",
   "attribute",
+  "default",
   "section_break_qqkh",
   "from_range",
   "increment",
@@ -120,17 +122,29 @@
    "fieldtype": "Section Break"
   },
   {
+   "depends_on": "eval:doc.increment == 0",
    "fieldname": "attribute_value",
    "fieldtype": "Table",
    "label": "Attribute Value",
-   "options": "Item Attribute Value"
+   "options": "CPQ Item Attribute Value"
+  },
+  {
+   "fieldname": "default",
+   "fieldtype": "HTML",
+   "label": "Default",
+   "options": "<p>126</p>"
+  },
+  {
+   "fieldname": "default_value",
+   "fieldtype": "Data",
+   "label": "Default Value"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2025-08-28 11:46:58.991945",
+ "modified": "2025-08-28 14:38:39.285458",
  "modified_by": "Administrator",
  "module": "CPQ",
  "name": "Chart of Design",

@@ -44,7 +44,7 @@ frappe.ui.form.on("Chart of Design", {
             frm.fields_dict.attribute_value.grid.grid_rows.forEach(row => {
 
                 if (row.doc.exclude == 1) {
-                    $(row.row).css('background-color', '#FFF3CD');
+                    $(row.row).css('background-color', '#f9d7d7ff');
                 }
                 else {
                     $(row.row).css('background-color', '');
@@ -56,38 +56,86 @@ frappe.ui.form.on("Chart of Design", {
                 .map(values => values.attribute_value);
 
             const selectTemplate = `
-                    <div class="frappe-control input-max-width" data-fieldtype="Select" data-fieldname="default">
-                        <div class="form-group">
-                            <div class="clearfix">
-                                <label class="control-label">Default Option</label>
-                                <span class="help"></span>
-                            </div>
-                            <div class="control-input-wrapper">
-                                <div class="control-input flex align-center">
-                                    <select class="input-with-feedback form-control ellipsis" 
-                                        data-fieldtype="Select" data-fieldname="default">
-                                        {% for(var i = 0; i < values.length; i++) { %}
-                                            <option value="{%= values[i] %}">{%= values[i] %}</option>
-                                         {% } %}                                    
-                                    </select>
-                                    <div class="select-icon">
-                                        <svg class="icon icon-sm" aria-hidden="true"><use href="#icon-select"></use></svg>
-                                    </div>
-                                </div>
-                                <div class="control-value like-disabled-input" style="display:none;"></div>
-                                <p class="help-box small text-muted"></p>
-                            </div>
+                <div class="frappe-control input-max-width" data-fieldtype="Select" data-fieldname="non-numeric-default">
+                    <div class="form-group">
+                        <div class="clearfix">
+                            <label class="control-label">Default</label>
+                            <span class="help"></span>
                         </div>
-                        <span class="tooltip-content">default_option</span>
+                        <div class="control-input-wrapper">
+                            <div class="control-input flex align-center">
+                                <select class="input-with-feedback form-control ellipsis" 
+                                    data-fieldtype="Select" data-fieldname="non-numeric-default">
+                                    {% for(var i = 0; i < values.length; i++) { %}
+                                        <option value="{%= values[i] %}" 
+                                            {% if(values[i] == default_value) { %} selected {% } %}>
+                                            {%= values[i] %}
+                                        </option>
+                                    {% } %}                                 
+                                </select>
+                                <div class="select-icon">
+                                    <svg class="icon icon-sm" aria-hidden="true"><use href="#icon-select"></use></svg>
+                                </div>
+                            </div>
+                            <div class="control-value like-disabled-input" style="display:none;"></div>
+                            <p class="help-box small text-muted"></p>
+                        </div>
                     </div>
-                `;
+                    <span class="tooltip-content">non-numeric-default</span>
+                </div>
+            `;
 
-            console.log(attribute_values)
-            const renderedSelect = frappe.render_template(selectTemplate, { values: attribute_values });
+            const renderedSelect = frappe.render(selectTemplate, {
+                values: attribute_values,
+                default_value: frm.doc.default_value || ""
+            });
 
             frm.set_df_property("default", "options", renderedSelect);
             frm.refresh_field("default");
 
+            frm.fields_dict.default.$wrapper
+                .find('select[data-fieldname="non-numeric-default"]')
+                .on("change", function () {
+                    let selectedValue = $(this).val()
+                    frm.set_value("default_value", selectedValue);
+                });
+
         }
-    },
+        else {
+            const floatTemplate = `
+            <div class="frappe-control input-max-width" data-fieldtype="Float" data-fieldname="numeric-default">
+                <div class="form-group">
+                    <div class="clearfix">
+                        <label class="control-label" style="padding-right: 0px;">Default</label>
+                        <span class="help"></span>
+                    </div>
+                    <div class="control-input-wrapper">
+                        <div class="control-input">
+                            <input type="text" autocomplete="off" 
+                                class="input-with-feedback form-control" 
+                                data-fieldtype="Float" data-fieldname="numeric-default" 
+                                placeholder="" data-doctype="Chart of Design"
+                                value="{%= value %}">
+                        </div>
+                        <div class="control-value like-disabled-input" style="display: none;"></div>
+                        <p class="help-box small text-muted"></p>
+                    </div>
+                </div>
+                <span class="tooltip-content">numeric-default</span>
+            </div>
+        `;
+
+            const renderedFloat = frappe.render(floatTemplate, { value: frm.doc.default_value || "" });
+
+            frm.set_df_property("default", "options", renderedFloat);
+            frm.refresh_field("default");
+
+            frm.fields_dict.default.$wrapper
+                .find('input[data-fieldname="numeric-default"]')
+                .on("input", function () {
+                    let selectedValue = $(this).val();
+                    frm.set_value("default_value", selectedValue);
+                });
+        }
+    }
 });
