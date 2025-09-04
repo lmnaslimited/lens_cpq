@@ -3,7 +3,7 @@
 
 frappe.ui.form.on("Chart of Design", {
     refresh(frm) {
-        // Show "Convert to Group" for child node which is non numeric attribute
+        // Show "Convert to Group" for child node and non-numeric attribute
         if (!frm.doc.increment && !frm.doc.is_group == 1) {
             frm.add_custom_button(__('Convert to Group'), function () {
                 frm.set_value('is_group', 1);
@@ -11,7 +11,7 @@ frappe.ui.form.on("Chart of Design", {
             }, __("Actions"));
         }
 
-        // Show "Convert to Child" only if group and has no children
+        // Show "Convert to Child" for group node with no children
         if (frm.doc.is_group == 1) {
             frappe.call({
                 method: "frappe.client.get_count",
@@ -32,30 +32,31 @@ frappe.ui.form.on("Chart of Design", {
             });
         }
 
-
+        // Render custom select for non-numeric attributes
         if (frm.doc.increment == 0 && frm.doc.attribute_value.length > 0) {
 
-            let childTableWrapper = frm.fields_dict.attribute_value.grid.wrapper
+            // Hide add and remove buttons in child table
+            let lChildTableWrapper = frm.fields_dict.attribute_value.grid.wrapper;
 
-            childTableWrapper.find(".grid-add-row").hide();
+            lChildTableWrapper.find(".grid-add-row").hide();
+            lChildTableWrapper.find(".grid-remove-rows").hide();
 
-            childTableWrapper.find(".grid-remove-rows").hide();
-
-            frm.fields_dict.attribute_value.grid.grid_rows.forEach(row => {
-
-                if (row.doc.exclude == 1) {
-                    $(row.row).css('background-color', '#f9d7d7ff');
-                }
-                else {
-                    $(row.row).css('background-color', '');
+            // Highlight excluded rows
+            frm.fields_dict.attribute_value.grid.grid_rows.forEach(lRow => {
+                if (lRow.doc.exclude == 1) {
+                    $(lRow.row).css('background-color', '#f9d7d7ff');
+                } else {
+                    $(lRow.row).css('background-color', '');
                 }
             });
 
-            let attribute_values = frm.doc.attribute_value
-                .filter(values => values.exclude == 0)
-                .map(values => values.attribute_value);
+            // Collect non-excluded attribute values
+            let laAttributeValues = frm.doc.attribute_value
+                .filter(lValues => lValues.exclude == 0)
+                .map(lValues => lValues.attribute_value);
 
-            const selectTemplate = `
+            // Custom select template
+            const LSelectTemplate = `
                 <div class="frappe-control input-max-width" data-fieldtype="Select" data-fieldname="non-numeric-default">
                     <div class="form-group">
                         <div class="clearfix">
@@ -66,6 +67,7 @@ frappe.ui.form.on("Chart of Design", {
                             <div class="control-input flex align-center">
                                 <select class="input-with-feedback form-control ellipsis" 
                                     data-fieldtype="Select" data-fieldname="non-numeric-default">
+                                    <option value=""></option>
                                     {% for(var i = 0; i < values.length; i++) { %}
                                         <option value="{%= values[i] %}" 
                                             {% if(values[i] == default_value) { %} selected {% } %}>
@@ -85,24 +87,27 @@ frappe.ui.form.on("Chart of Design", {
                 </div>
             `;
 
-            const renderedSelect = frappe.render(selectTemplate, {
-                values: attribute_values,
+            // Render select with  non-excluded values
+            const LRenderedSelect = frappe.render(LSelectTemplate, {
+                values: laAttributeValues,
                 default_value: frm.doc.default_value || ""
             });
 
-            frm.set_df_property("default", "options", renderedSelect);
+            // Set custom select into default field
+            frm.set_df_property("default", "options", LRenderedSelect);
             frm.refresh_field("default");
 
+            // Update hidden default_value when selection changes (html field)
             frm.fields_dict.default.$wrapper
                 .find('select[data-fieldname="non-numeric-default"]')
                 .on("change", function () {
-                    let selectedValue = $(this).val()
-                    frm.set_value("default_value", selectedValue);
+                    let lSelectedValue = $(this).val();
+                    frm.set_value("default_value", lSelectedValue);
                 });
 
-        }
-        else {
-            const floatTemplate = `
+        } else {
+            // Render custom float input for numeric attributes
+            const LFloatTemplate = `
             <div class="frappe-control input-max-width" data-fieldtype="Float" data-fieldname="numeric-default">
                 <div class="form-group">
                     <div class="clearfix">
@@ -125,16 +130,19 @@ frappe.ui.form.on("Chart of Design", {
             </div>
         `;
 
-            const renderedFloat = frappe.render(floatTemplate, { value: frm.doc.default_value || "" });
+            // Render float template with current default value
+            const LRenderedFloat = frappe.render(LFloatTemplate, { value: frm.doc.default_value || "" });
 
-            frm.set_df_property("default", "options", renderedFloat);
+            // Set custom float into default field
+            frm.set_df_property("default", "options", LRenderedFloat);
             frm.refresh_field("default");
 
+            // Update hidden default_value on input change (html field)
             frm.fields_dict.default.$wrapper
                 .find('input[data-fieldname="numeric-default"]')
                 .on("input", function () {
-                    let selectedValue = $(this).val();
-                    frm.set_value("default_value", selectedValue);
+                    let lSelectedValue = $(this).val();
+                    frm.set_value("default_value", lSelectedValue);
                 });
         }
     }
