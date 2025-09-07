@@ -66,6 +66,9 @@ frappe.ui.form.on("Chart of Design", {
                             <div class="control-input flex align-center">
                                 <select class="input-with-feedback form-control ellipsis" 
                                     data-fieldtype="Select" data-fieldname="non-numeric-default">
+                                    <option value=""
+                                        {% if(!default_value) { %} selected {% } %}>
+                                    </option>
                                     {% for(var i = 0; i < values.length; i++) { %}
                                         <option value="{%= values[i] %}" 
                                             {% if(values[i] == default_value) { %} selected {% } %}>

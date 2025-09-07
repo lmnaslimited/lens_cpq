@@ -137,15 +137,15 @@ class ChartofDesign(NestedSet):
                 validate_is_incremental(l_from_range, l_increment, self.from_range, self.attribute, "From Range")
                 validate_is_incremental(l_from_range, l_increment, self.to_range, self.attribute, "To Range")
 
-        else: 
-            if self.default_value:
-                included_value = []
-                for value in self.attribute_value:
-                    if not value.exclude:
-                        included_value.append(value)
+        # else: 
+        #     if self.default_value:
+        #         included_value = []
+        #         for value in self.attribute_value:
+        #             if not value.exclude:
+        #                 included_value.append(value)
             
-                if self.default_value not in included_value:
-                    frappe.throw(f"(Warning: {self.default_value} is default value)")
+        #         if self.default_value not in included_value:
+        #             frappe.throw(f"(Warning: you are trying to exclude the default value")
                         
 
 

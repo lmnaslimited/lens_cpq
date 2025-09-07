@@ -7,9 +7,11 @@
  "field_order": [
   "condition_type",
   "input_value",
+  "enable",
   "column_break_stpz",
   "access_key",
   "output_value",
+  "priority",
   "section_break_puux",
   "input_condition_value",
   "output_condition_value"
@@ -57,12 +59,23 @@
    "fieldtype": "Link",
    "label": "Condition Type",
    "options": "Condition Type"
+  },
+  {
+   "default": "0",
+   "fieldname": "enable",
+   "fieldtype": "Check",
+   "label": "Enable"
+  },
+  {
+   "fieldname": "priority",
+   "fieldtype": "Int",
+   "label": "Priority"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-06 18:28:43.645286",
+ "modified": "2025-08-26 22:11:29.673927",
  "modified_by": "Administrator",
  "module": "CPQ",
  "name": "Condition Value",
