@@ -124,6 +124,16 @@ class ChartofDesign(NestedSet):
                     i_fieldname (str): Field name for error message.
             """
             def fn_validate_is_incremental(i_from_range, i_increment, i_value, i_attribute, i_fieldname):
+                # Since we are using same field "default_value" to store both
+                # Non numeric and Numeric Default value, we need to check
+                # apha-numeric condition for Numeric attribute as precaution
+                try:
+                    float(i_value)
+                except ValueError:
+                    frappe.throw(
+                        _("{0} for Attribute {1} must be a numeric value")
+                        .format(i_fieldname, i_attribute)
+                    )
                 l_precision = max(len(cstr(v).split(".")[-1].rstrip("0")) for v in (i_value, i_increment))
                 l_remainder = flt((flt(i_value) - i_from_range) % i_increment, l_precision)
                 l_incremental = l_remainder == 0 or l_remainder == i_increment
