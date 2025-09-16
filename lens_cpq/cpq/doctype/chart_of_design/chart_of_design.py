@@ -186,10 +186,6 @@ class ChartofDesign(NestedSet):
                     for l_value in self.attribute_value 
                     if not l_value.exclude
                 ]
-                
-                # if not la_included_values:
-                #     # Error: Raised when all attribute values are excluded
-                #     frappe.throw("At least one attribute should not be excluded.")
 
                 if self.default_value not in la_included_values:
                     # Error: Raised when the chosen `default_value` marked as excluded
