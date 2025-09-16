@@ -6,19 +6,24 @@
  "engine": "InnoDB",
  "field_order": [
   "section_break_ruju",
-  "is_group",
-  "old_parent",
-  "parent_chart_of_design",
-  "root_abbr",
-  "root_node",
-  "column_break_huys",
-  "attribute",
-  "from_range",
-  "to_range",
-  "increment",
-  "attribute_value",
   "lft",
-  "rgt"
+  "is_group",
+  "parent_chart_of_design",
+  "old_parent",
+  "default_value",
+  "column_break_awty",
+  "rgt",
+  "root_node",
+  "root_abbr",
+  "attribute",
+  "default",
+  "section_break_qqkh",
+  "from_range",
+  "increment",
+  "column_break_jvyn",
+  "to_range",
+  "section_break_dhme",
+  "attribute_value"
  ],
  "fields": [
   {
@@ -78,39 +83,68 @@
    "label": "Root Node"
   },
   {
+   "depends_on": "eval:doc.increment > 0",
    "fetch_from": "attribute.from_range",
+   "fetch_if_empty": 1,
    "fieldname": "from_range",
    "fieldtype": "Float",
    "label": "From Range"
   },
   {
+   "depends_on": "eval:doc.increment > 0",
    "fetch_from": "attribute.to_range",
+   "fetch_if_empty": 1,
    "fieldname": "to_range",
    "fieldtype": "Float",
    "label": "To Range"
   },
   {
+   "depends_on": "eval:doc.increment > 0",
    "fetch_from": "attribute.increment",
    "fieldname": "increment",
    "fieldtype": "Float",
    "label": "Increment"
   },
   {
-   "fieldname": "attribute_value",
-   "fieldtype": "Small Text",
-   "label": "Attribute Value",
-   "read_only": 1
+   "fieldname": "column_break_awty",
+   "fieldtype": "Column Break"
   },
   {
-   "fieldname": "column_break_huys",
+   "fieldname": "section_break_qqkh",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_jvyn",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_dhme",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.increment == 0",
+   "fieldname": "attribute_value",
+   "fieldtype": "Table",
+   "label": "Attribute Value",
+   "options": "CPQ Item Attribute Value"
+  },
+  {
+   "fieldname": "default",
+   "fieldtype": "HTML",
+   "label": "Default"
+  },
+  {
+   "fieldname": "default_value",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Default Value"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2025-08-08 15:19:11.065409",
+ "modified": "2025-09-16 10:58:37.266204",
  "modified_by": "Administrator",
  "module": "CPQ",
  "name": "Chart of Design",
