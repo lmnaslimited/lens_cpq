@@ -137,6 +137,7 @@
   {
    "fieldname": "default_value",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Default Value"
   }
  ],
@@ -144,7 +145,7 @@
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2025-08-28 14:38:39.285458",
+ "modified": "2025-09-04 16:41:59.593759",
  "modified_by": "Administrator",
  "module": "CPQ",
  "name": "Chart of Design",
