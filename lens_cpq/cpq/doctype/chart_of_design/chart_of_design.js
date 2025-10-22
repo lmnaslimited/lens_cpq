@@ -41,6 +41,8 @@ frappe.ui.form.on("Chart of Design", {
             lChildTableWrapper.find(".grid-add-row").hide();
             lChildTableWrapper.find(".grid-remove-rows").hide();
 
+            // frm.set_df_property("attribute_value", cannot_add_rows, true);
+
             // Highlight excluded rows
             frm.fields_dict.attribute_value.grid.grid_rows.forEach(lRow => {
                 if (lRow.doc.exclude == 1) {
@@ -104,7 +106,6 @@ frappe.ui.form.on("Chart of Design", {
                     let lSelectedValue = $(this).val();
                     frm.set_value("default_value", lSelectedValue);
                 });
-
         } else {
             // Render custom float input for numeric attributes
             const LFloatTemplate = `

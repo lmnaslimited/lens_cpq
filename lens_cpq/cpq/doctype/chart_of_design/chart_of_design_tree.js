@@ -120,6 +120,22 @@ frappe.treeview_settings["Chart of Design"] = {
     onload: function (ldTreeview) {
         frappe.treeview_settings["Chart of Design"].treeview = ldTreeview;
 
+        ldTreeview.page.add_inner_button(
+            __("Design"),
+            function () {
+                const plant_floor = ldTreeview.page.fields_dict.plant_floor.get_value();
+
+                if (!plant_floor) {
+                    frappe.throw(__("Please select a Plant Floor before creating a Design"));
+                }
+                frappe.route_options = {
+                    design_template: plant_floor
+                };
+                frappe.new_doc("Design");
+            },
+            __("Create")
+        );
+
         /*
        * Purpose - Show a dialog to create a new node in the Chart of Design tree.
        * @iParentNode {Object} - Node under which the new node is added.
