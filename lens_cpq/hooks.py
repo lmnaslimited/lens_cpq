@@ -148,6 +148,10 @@ app_license = "mit"
 doc_events = {
      "*": {
         "before_save": "lens_cpq.cpq.doctype.pricing_structure.pricing_structure.fn_dispatch_pricing_if_needed"
+    },
+    # added for testing
+    "Lead":{
+        "before_save": "lens_cpq.condition.condition_evaluator.before_save"
     }
 }
 
