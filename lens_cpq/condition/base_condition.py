@@ -33,36 +33,36 @@ class BaseCondition(ABC):
         has Same fields "field_name" and "value"
         so on get_all the output's field is overriding the input's key
         """
-        condition_values = frappe.get_all(
+        l_a_condition_values = frappe.get_all(
             "Condition Value",
             filters={"condition_type":["in", get_condition_type], "enable":1},
             fields=["name", "priority"],
             order_by="priority"
             )
-        input_values = frappe.get_all(
+        l_a_input_values = frappe.get_all(
             "Input Condition Value",
-            filters={"parent": ["in", [cv["name"] for cv in condition_values]]},
+            filters={"parent": ["in", [cv["name"] for cv in l_a_condition_values]]},
             fields=["parent", "field_name", "value"]
         )
 
-        output_values = frappe.get_all(
+        l_a_output_values = frappe.get_all(
             "Output Condition Value",
-            filters={"parent": ["in", [cv["name"] for cv in condition_values]]},
+            filters={"parent": ["in", [cv["name"] for cv in l_a_condition_values]]},
             fields=["parent", "field_name", "value"]
         )
-        merged = []
-        for cv in condition_values:
-            merged.append({
+        l_a_merged_record = []
+        for cv in l_a_condition_values:
+            l_a_merged_record.append({
                 "name": cv["name"],
                 "priority": cv["priority"],
                 "input_conditions": [
-                    i for i in input_values if i["parent"] == cv["name"]
+                    inp for inp in l_a_input_values if inp["parent"] == cv["name"]
                 ],
                 "output_conditions": [
-                    o for o in output_values if o["parent"] == cv["name"]
+                    out for out in l_a_output_values if out["parent"] == cv["name"]
                 ]
             })
-        return merged
+        return l_a_merged_record
 
     def fn_transform_dict_to_array(self, i_d_data)->list[dict]:
 

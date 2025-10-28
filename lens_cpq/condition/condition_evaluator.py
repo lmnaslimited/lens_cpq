@@ -11,9 +11,14 @@ class ConditionEvaluator(BaseCondition):
         return condition_records
     
     def execute(self):
+        # instantiate the ConditionExecutionManager
+        # use the function to get the order of execution
+        # for constant execute the Static Evaluator
         pass
 
 
+
+# defined for testing the class
 def before_save(doc, event):
     condition = ConditionEvaluator(doc)
     evaluate = condition.evaluate()
