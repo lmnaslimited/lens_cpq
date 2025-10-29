@@ -1,36 +1,43 @@
-class DesignConfigurator {
-    constructor({ wrapper, page, frm, design_configurator }) {
-        this.$wrapper = $(wrapper);
-        this.page = page;
-        this.design_configurator = design_configurator;
-        this.frm = frm;
+class clDesignConfigurator {
 
-        this.make();
-        this.prepare_layout();
-        this.bind_events();
+    // Initializes the Design Configurator instance with form and layout details
+    constructor({ wrapper: iWrapper, page: iPage, frm: iFrm, design_configurator: iDesignConfigurator }) {
+        this.$wrapper = $(iWrapper);
+        this.page = iPage;
+        this.design_configurator = iDesignConfigurator;
+        this.frm = iFrm;
+
+        this.fnMake();
+        this.fnPrepareLayout();
+        this.fnBindEvents();
     }
 
-    make() {
-        let options = {
-            ...this.tree_options(),
-            ...this.tree_methods(),
+
+    // Builds and initializes the TreeView 
+    fnMake() {
+        let ldOptions = {
+            ...this.fnTreeOptions(),
+            ...this.fnTreeMethods(),
         };
 
-        frappe.views.trees["Design Configurator"] = new frappe.views.TreeView(options);
-        let node = frappe.views.trees["Design Configurator"].tree.root_node;
-        frappe.views.trees["Design Configurator"].tree.show_toolbar(node);
-        frappe.views.trees["Design Configurator"].tree.load_children(node, true);
+        frappe.views.trees["Design Configurator"] = new frappe.views.TreeView(ldOptions);
+        let lNode = frappe.views.trees["Design Configurator"].tree.root_node;
+
+        frappe.views.trees["Design Configurator"].tree.show_toolbar(lNode);
+        frappe.views.trees["Design Configurator"].tree.load_children(lNode, true);
         this.tree_view = frappe.views.trees["Design Configurator"];
     }
 
-    bind_events() {
+    //  Binds custom events to the TreeView 
+    fnBindEvents() {
         frappe.views.trees["Design Configurator"].events = {
             frm: this.frm,
-            load_tree: this.load_tree,
+            load_tree: this.fnLoadTree,
         };
     }
 
-    tree_options() {
+    //  Defines configuration options for the TreeView component
+    fnTreeOptions() {
         return {
             parent: this.$wrapper.get(0),
             body: this.$wrapper.get(0),
@@ -50,33 +57,35 @@ class DesignConfigurator {
         };
     }
 
-    tree_methods() {
-        let frm_obj = this;
-        let view = frappe.views.trees["Design Configurator"];
+    // Defines methods and behaviors used by the TreeView during load and initialization
+    fnTreeMethods() {
+        let lFrmObj = this;
 
         return {
-            onload: function (me) {
-                // me.args["parent_id"] = frm_obj.frm.doc.name;
-                me.args["parent"] = frm_obj.frm.doc.design_template;
-                me.parent = frm_obj.$wrapper.get(0);
-                me.body = frm_obj.$wrapper.get(0);
-                me.make_tree();
+            onload: function (iTreeView) {
+                iTreeView.args["parent"] = lFrmObj.frm.doc.design_template;
+                iTreeView.parent = lFrmObj.$wrapper.get(0);
+                iTreeView.body = lFrmObj.$wrapper.get(0);
+                iTreeView.make_tree();
             }
         };
     }
 
-    prepare_layout() {
-        let main_div = $(this.page)[0];
+    //  Prepares and styles the layout of the Design TreeView section 
+    fnPrepareLayout() {
+        let lMainDiv = $(this.page)[0];
 
-        main_div.style.marginBottom = "15px";
-        $(main_div).find(".tree-children")[0].style.minHeight = "370px";
-        $(main_div).find(".tree-children")[0].style.maxHeight = "370px";
-        $(main_div).find(".tree-children")[0].style.overflowY = "auto";
+        lMainDiv.style.marginBottom = "15px";
+        $(lMainDiv).find(".tree-children")[0].style.minHeight = "370px";
+        $(lMainDiv).find(".tree-children")[0].style.maxHeight = "370px";
+        $(lMainDiv).find(".tree-children")[0].style.overflowY = "auto";
     }
 
-    load_tree(response, node) {
-        frappe.views.trees["Design Configurator"].tree.load_children(node);
+    //  Loads child nodes dynamically when expanding a tree node
+    fnLoadTree(iResponse, iNode) {
+        frappe.views.trees["Design Configurator"].tree.load_children(iNode);
     }
 }
 
-frappe.ui.DesignConfigurator = DesignConfigurator;
+// Register Design Configurator class globally within Frappe UI
+frappe.ui.DesignConfigurator = clDesignConfigurator;

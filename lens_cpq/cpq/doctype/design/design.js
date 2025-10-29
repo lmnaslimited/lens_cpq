@@ -4,6 +4,7 @@ let ldFieldFilteredOptions = {};
 frappe.ui.form.on('Design', {
     refresh(frm) {
 
+        // Build tree only if not already loaded for this document
         if (!frappe.design_configurator || frappe.design_configurator.design_configurator !== frm.doc.name) {
             frm.trigger("build_tree");
         }
@@ -89,14 +90,18 @@ frappe.ui.form.on('Design', {
     },
 
     build_tree(frm) {
-        let $parent = $(frm.fields_dict["design_tree"].wrapper);
 
-        $parent.empty();
+        // Select the wrapper div of the 'design_tree' HTML field
+        let lParent = $(frm.fields_dict["design_tree"].wrapper);
 
+        // Clear old tree content
+        lParent.empty();
+
+        // Load design configurator bundle and render tree
         frappe.require("design_configurator.bundle.js").then(() => {
             frappe.design_configurator = new frappe.ui.DesignConfigurator({
-                wrapper: $parent,
-                page: $parent,
+                wrapper: lParent,
+                page: lParent,
                 frm: frm,
                 design_configurator: frm.doc.name,
             });

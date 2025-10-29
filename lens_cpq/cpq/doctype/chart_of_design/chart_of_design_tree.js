@@ -120,6 +120,7 @@ frappe.treeview_settings["Chart of Design"] = {
     onload: function (ldTreeview) {
         frappe.treeview_settings["Chart of Design"].treeview = ldTreeview;
 
+        // Add an inner button labeled "Design" under the "Create" group in the page header
         ldTreeview.page.add_inner_button(
             __("Design"),
             function () {
