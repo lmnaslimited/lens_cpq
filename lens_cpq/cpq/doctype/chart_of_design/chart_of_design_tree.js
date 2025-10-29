@@ -80,7 +80,7 @@ frappe.treeview_settings["Chart of Design"] = {
 
             // While clicking - open dialog to add group node
             click: function (node) {
-                const ldTree = frappe.views.trees["Chart of Design"];
+                let ldTree = frappe.views.trees["Chart of Design"];
                 ldTree.fnMakeNewNode(node, true);
             },
             btnClass: "hidden-xs",
@@ -95,7 +95,7 @@ frappe.treeview_settings["Chart of Design"] = {
 
             // While clicking - open dialog to add child node
             click: function (node) {
-                const ldTree = frappe.views.trees["Chart of Design"];
+                let ldTree = frappe.views.trees["Chart of Design"];
                 ldTree.fnMakeNewNode(node, false);
             },
             btnClass: "hidden-xs",
@@ -119,6 +119,22 @@ frappe.treeview_settings["Chart of Design"] = {
     // While treeview loads - store treeview reference and define new node logic
     onload: function (ldTreeview) {
         frappe.treeview_settings["Chart of Design"].treeview = ldTreeview;
+
+        ldTreeview.page.add_inner_button(
+            __("Design"),
+            function () {
+                const LPlantFloor = ldTreeview.page.fields_dict.plant_floor.get_value();
+
+                if (!LPlantFloor) {
+                    frappe.throw(__("Please select a Plant Floor before creating a Design"));
+                }
+                frappe.route_options = {
+                    design_template: LPlantFloor
+                };
+                frappe.new_doc("Design");
+            },
+            __("Create")
+        );
 
         /*
        * Purpose - Show a dialog to create a new node in the Chart of Design tree.

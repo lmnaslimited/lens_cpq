@@ -1,92 +1,104 @@
 {
- "actions": [],
- "allow_rename": 1,
- "autoname": "naming_series:",
- "creation": "2025-06-30 15:28:10.022971",
- "doctype": "DocType",
- "engine": "InnoDB",
- "field_order": [
-  "naming_series",
-  "design_template",
-  "column_break_vvrr",
-  "section_break_iuqk",
-  "dynamic_fields",
-  "design_attributes",
-  "item_tab",
-  "item"
- ],
- "fields": [
-  {
-   "fieldname": "design_template",
-   "fieldtype": "Link",
-   "label": "Design Template",
-   "link_filters": "[[\"Item\",\"has_variants\",\"=\",1]]",
-   "options": "Item"
-  },
-  {
-   "fieldname": "dynamic_fields",
-   "fieldtype": "HTML",
-   "label": "Dynamic Fields"
-  },
-  {
-   "fieldname": "design_attributes",
-   "fieldtype": "Table",
-   "hidden": 1,
-   "label": "Design Attributes",
-   "options": "Item Variant Attribute"
-  },
-  {
-   "fieldname": "naming_series",
-   "fieldtype": "Select",
-   "hidden": 1,
-   "label": "Series",
-   "options": "{design_template.-.###}"
-  },
-  {
-   "fieldname": "column_break_vvrr",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "item",
-   "fieldtype": "Link",
-   "label": "Item",
-   "options": "Item"
-  },
-  {
-   "fieldname": "section_break_iuqk",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "item_tab",
-   "fieldtype": "Tab Break",
-   "label": "Item"
-  }
- ],
- "grid_page_length": 50,
- "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2025-07-04 15:40:06.830738",
- "modified_by": "test@lmnas.com",
- "module": "CPQ",
- "name": "Design",
- "naming_rule": "By \"Naming Series\" field",
- "owner": "Administrator",
- "permissions": [
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "System Manager",
-   "share": 1,
-   "write": 1
-  }
- ],
- "row_format": "Dynamic",
- "sort_field": "modified",
- "sort_order": "DESC",
- "states": []
+    "actions": [],
+    "allow_rename": 1,
+    "autoname": "naming_series:",
+    "creation": "2025-06-30 15:28:10.022971",
+    "doctype": "DocType",
+    "engine": "InnoDB",
+    "field_order": [
+        "naming_series",
+        "design_template",
+        "column_break_vvrr",
+        "section_break_iuqk",
+        "dynamic_fields",
+        "design_attributes",
+        "tree_tab",
+        "design_tree",
+        "item_tab",
+        "item"
+    ],
+    "fields": [
+        {
+            "fieldname": "design_template",
+            "fieldtype": "Link",
+            "label": "Design Template",
+            "link_filters": "[[\"Item\",\"has_variants\",\"=\",1]]",
+            "options": "Item"
+        },
+        {
+            "fieldname": "dynamic_fields",
+            "fieldtype": "HTML",
+            "label": "Dynamic Fields"
+        },
+        {
+            "fieldname": "design_attributes",
+            "fieldtype": "Table",
+            "hidden": 1,
+            "label": "Design Attributes",
+            "options": "Item Variant Attribute"
+        },
+        {
+            "fieldname": "naming_series",
+            "fieldtype": "Select",
+            "hidden": 1,
+            "label": "Series",
+            "options": "{design_template.-.###}"
+        },
+        {
+            "fieldname": "column_break_vvrr",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "item",
+            "fieldtype": "Link",
+            "label": "Item",
+            "options": "Item"
+        },
+        {
+            "fieldname": "section_break_iuqk",
+            "fieldtype": "Section Break"
+        },
+        {
+            "fieldname": "item_tab",
+            "fieldtype": "Tab Break",
+            "label": "Item"
+        },
+        {
+            "fieldname": "tree_tab",
+            "fieldtype": "Tab Break",
+            "label": "Tree"
+        },
+        {
+            "fieldname": "design_tree",
+            "fieldtype": "HTML",
+            "label": "Design In Tree View"
+        }
+    ],
+    "grid_page_length": 50,
+    "index_web_pages_for_search": 1,
+    "links": [],
+    "modified": "2025-10-16 12:21:01.297764",
+    "modified_by": "Administrator",
+    "module": "CPQ",
+    "name": "Design",
+    "naming_rule": "By \"Naming Series\" field",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "System Manager",
+            "share": 1,
+            "write": 1
+        }
+    ],
+    "row_format": "Dynamic",
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "states": []
 }

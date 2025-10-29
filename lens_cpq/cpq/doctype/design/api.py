@@ -157,3 +157,43 @@ def fn_create_item_from_design(design_name):
     # ld_item_price.price_list_rate = ld_design_doc.total_cost
     # ld_item_price.insert()
     return ld_item_variant.item_code
+
+"""
+    Whitelist this function to make it accessible via Frappe client calls (e.g., from JS)
+    Function to get hierarchical children nodes for a given Doctype,
+    optionally filtered by plant_floor or root.
+    Incoming variable on runtime by framework.
+"""
+@frappe.whitelist()
+def fn_get_children(doctype, parent=None, is_root=False, **kwargs):
+   
+    # Determine the parent field name dynamically (e.g., parent_machine_node)
+    l_parent_fieldname = "parent_chart_of_design"
+
+    # Fields to return
+    la_fields = [
+        "name as value",
+        "attribute",
+        "abbr",
+        "is_group as expandable",
+        l_parent_fieldname,
+        "lft",
+        "rgt"
+    ]
+
+    # Filters
+    la_filters = []
+
+    # Handle root and non-root filtering
+    if is_root:
+        # Root nodes: no parent set
+        la_filters.append([l_parent_fieldname, "is", "not set"])
+    else:
+        # Children: filter by parent node
+        la_filters.append([l_parent_fieldname, "=", parent])
+
+    # Fetch the list of child nodes with the specified filters
+    la_nodes = frappe.get_list("Chart of Design", fields=la_fields, filters=la_filters)
+
+    # Return the list of nodes to the client
+    return la_nodes
