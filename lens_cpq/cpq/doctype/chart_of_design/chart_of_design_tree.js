@@ -120,6 +120,53 @@ frappe.treeview_settings["Chart of Design"] = {
     onload: function (ldTreeview) {
         frappe.treeview_settings["Chart of Design"].treeview = ldTreeview;
 
+        // Add an inner button labeled "Design" under the "Create" group in the page header
+        ldTreeview.page.add_inner_button(
+            __("Design Template"),
+            function () {
+                const LPlantFloor = ldTreeview.page.fields_dict.plant_floor.get_value();
+
+                if (!LPlantFloor) {
+                    frappe.throw(__("Please select a Plant Floor before creating a Design Template"));
+                }
+
+                frappe.call({
+                    method: "frappe.desk.treeview.get_all_nodes",
+                    args: {
+                        doctype: "Chart of Design",
+                        label: LPlantFloor,
+                        parent: LPlantFloor,
+                        tree_method: "lens_cpq.cpq.doctype.chart_of_design.api.fn_get_children",
+                        is_root: true,
+                        plant_floor: LPlantFloor,
+                    },
+                    callback: function (response) {
+                        if (response.message) {
+
+                            chartNode = response.message
+
+                            designAttributes = []
+
+                            chartNode.forEach((node) => {
+                                console.log(node)
+                            })
+
+
+                        }
+
+                        ldTreeview.page.fields_dict.design_attrbutes
+                    }
+                })
+
+                frappe.route_options = {
+                    is_template: true,
+                    design_attrbutes: designAttributes
+                };
+                frappe.new_doc("Design");
+            },
+            __("Create")
+        );
+
         /*
        * Purpose - Show a dialog to create a new node in the Chart of Design tree.
        * @iParentNode {Object} - Node under which the new node is added.

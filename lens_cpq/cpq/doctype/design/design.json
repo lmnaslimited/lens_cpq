@@ -7,16 +7,21 @@
  "engine": "InnoDB",
  "field_order": [
   "naming_series",
-  "design_template",
+  "is_template",
   "column_break_vvrr",
+  "template_name",
+  "design_template",
   "section_break_iuqk",
   "dynamic_fields",
   "design_attributes",
+  "tree_tab",
+  "design_tree",
   "item_tab",
   "item"
  ],
  "fields": [
   {
+   "depends_on": "eval:!doc.is_template",
    "fieldname": "design_template",
    "fieldtype": "Link",
    "label": "Design Template",
@@ -60,13 +65,35 @@
    "fieldname": "item_tab",
    "fieldtype": "Tab Break",
    "label": "Item"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_template",
+   "fieldtype": "Check",
+   "label": "Is Template"
+  },
+  {
+   "fieldname": "tree_tab",
+   "fieldtype": "Tab Break",
+   "label": "Tree"
+  },
+  {
+   "fieldname": "design_tree",
+   "fieldtype": "HTML",
+   "label": "Design In Tree View"
+  },
+  {
+   "depends_on": "eval:doc.is_template",
+   "fieldname": "template_name",
+   "fieldtype": "Data",
+   "label": "Template Name"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-04 15:40:06.830738",
- "modified_by": "test@lmnas.com",
+ "modified": "2025-11-13 15:18:24.258069",
+ "modified_by": "Administrator",
  "module": "CPQ",
  "name": "Design",
  "naming_rule": "By \"Naming Series\" field",

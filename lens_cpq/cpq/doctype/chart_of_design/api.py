@@ -7,18 +7,30 @@ from frappe.utils import cint
 # Incoming variable on runtime by framework
 def fn_get_children(doctype, parent=None, is_root=False, plant_floor=None, **kwargs):
     
+    print(is_root)
+    print(doctype)
+    print(parent)
+
     # Determine the parent field name dynamically (e.g., parent_machine_node)
     l_parent_fieldname = "parent_" + frappe.scrub(doctype)
 
     # Fields to return
     la_fields = [
         "name as value",
-        "attribute",
-        "abbr",
         "is_group as expandable",
+        "root_node",
+        "root_abbr",
         l_parent_fieldname,
+        "attribute",
+        "from_range",
+        "to_range",
+        "increment",
+        "default_value",
         "lft",
-        "rgt"
+        "rgt",
+        "`tabCPQ Item Attribute Value`.attribute_value",
+        "`tabCPQ Item Attribute Value`.abbr",
+        "`tabCPQ Item Attribute Value`.exclude",
     ]
 
     # Filters
@@ -33,15 +45,33 @@ def fn_get_children(doctype, parent=None, is_root=False, plant_floor=None, **kwa
     else:
         # Children: filter by parent node
         la_filters.append([l_parent_fieldname, "=", parent])
-
+    
     # Fetch the list of child nodes with the specified filters
     la_nodes = frappe.get_list(doctype, fields=la_fields, filters=la_filters)
-     # Construct label
-    for ld_node in la_nodes:
-        ld_node["label"] = f"{ld_node.attribute} - {ld_node.abbr}" if ld_node.get("abbr") else ld_node.attribute
 
-    # Return the list of nodes to the client
-    return la_nodes
+    ld_grouped_nodes = {}
+
+    for ld_row in la_nodes:
+        l_key = ld_row["value"]
+
+        if l_key not in ld_grouped_nodes:
+            ld_node = ld_row.copy()
+            ld_node["attribute_value"] = []
+            ld_node["label"] = f"{ld_row['attribute']} - {ld_row['root_abbr']}" if ld_row.get("root_abbr") else ld_row["attribute"]
+
+            ld_node.pop("abbr", None)
+            ld_node.pop("exclude", None)
+
+            ld_grouped_nodes[l_key] = ld_node
+
+        if ld_row.get("attribute_value"):
+            ld_grouped_nodes[l_key]["attribute_value"].append({
+                "attribute_value": ld_row["attribute_value"],
+                "abbr": ld_row["abbr"],
+                "exclude": ld_row["exclude"]
+            })
+
+    return list(ld_grouped_nodes.values())
 
 """
     Purpose: Adds a new node to the 'Chart of Design' tree structure..
