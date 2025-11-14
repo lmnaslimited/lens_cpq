@@ -16,7 +16,7 @@ class ClModelController(Controller):
         print("[ModelController] Executing model logic...")
 
         # 
-        # dummy record to simulate the condition value's input value 
+        # dummy record to simulate the condition value's input value
         records = [
             {"field_evalutionType": "constant"},
             {"field_evalutionType": "api"},

@@ -8,6 +8,7 @@ class Ifcontroller(ABC):
         pass
 
 #fieldcondition interface
+# child table instance
 class Iffieldcondtions(ABC):
     type: Literal["api", "formula", "constant", "condition"]
     doctype: str
@@ -20,11 +21,12 @@ class Iffieldcondtions(ABC):
         pass
 
 # condition interface
+# one condition type record
 class IfCondtions(ABC):
-    Condtiontype: Any
+    Condtiontype: str
     InputSequence: Any
     Inputvalues: Any
-    inputfields: List[Iffieldcondtions]
+    inputfields: List[Iffieldcondtions] # input fields instances
     outputsequece: Any
     outputfields: List[Iffieldcondtions]
     Outputvalue: Any
@@ -46,5 +48,5 @@ class IfCondtions(ABC):
         pass
 
     @abstractmethod
-    def is_condition_true(self):
+    def is_condition_true(self)-> bool:
         pass
