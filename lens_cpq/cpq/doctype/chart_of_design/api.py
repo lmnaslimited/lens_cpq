@@ -7,9 +7,10 @@ from frappe.utils import cint
 # Incoming variable on runtime by framework
 def fn_get_children(doctype, parent=None, is_root=False, plant_floor=None, **kwargs):
     
-    print(is_root)
-    print(doctype)
-    print(parent)
+    # print(is_root)
+    # print(doctype)
+    # print(parent)
+    # print(plant_floor)
 
     # Determine the parent field name dynamically (e.g., parent_machine_node)
     l_parent_fieldname = "parent_" + frappe.scrub(doctype)
@@ -18,7 +19,6 @@ def fn_get_children(doctype, parent=None, is_root=False, plant_floor=None, **kwa
     la_fields = [
         "name as value",
         "is_group as expandable",
-        "root_node",
         "root_abbr",
         l_parent_fieldname,
         "attribute",
@@ -26,8 +26,6 @@ def fn_get_children(doctype, parent=None, is_root=False, plant_floor=None, **kwa
         "to_range",
         "increment",
         "default_value",
-        "lft",
-        "rgt",
         "`tabCPQ Item Attribute Value`.attribute_value",
         "`tabCPQ Item Attribute Value`.abbr",
         "`tabCPQ Item Attribute Value`.exclude",
@@ -71,6 +69,7 @@ def fn_get_children(doctype, parent=None, is_root=False, plant_floor=None, **kwa
                 "exclude": ld_row["exclude"]
             })
 
+    # print(ld_grouped_nodes)
     return list(ld_grouped_nodes.values())
 
 """

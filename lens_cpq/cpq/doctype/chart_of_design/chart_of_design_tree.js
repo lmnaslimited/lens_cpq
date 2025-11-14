@@ -130,6 +130,10 @@ frappe.treeview_settings["Chart of Design"] = {
                     frappe.throw(__("Please select a Plant Floor before creating a Design Template"));
                 }
 
+                // Declare variable outside the callback
+                let designAttributes = [];
+                let designconfigurators = [];
+
                 frappe.call({
                     method: "frappe.desk.treeview.get_all_nodes",
                     args: {
@@ -142,27 +146,51 @@ frappe.treeview_settings["Chart of Design"] = {
                     },
                     callback: function (response) {
                         if (response.message) {
+                            let chartNode = response.message;
 
-                            chartNode = response.message
+                            chartNode.forEach((nodeValue) => {
+                                let parent = nodeValue.parent;
+                                let childData = nodeValue.data;
 
-                            designAttributes = []
+                                childData.forEach(attr => {
+                                    designconfigurators.push({
+                                        parent_chart_of_design: parent,
+                                        label: attr.label,
+                                        is_group: attr.expandable,
+                                        attribute: attr.attribute,
+                                        from_range: attr.from_range,
+                                        to_range: attr.to_range,
+                                        increment: attr.increment,
+                                        default_value: attr.default_value,
+                                        options: JSON.stringify(attr.attribute_value),
+                                    })
 
-                            chartNode.forEach((node) => {
-                                console.log(node)
-                            })
 
+                                    if (!attr.expandable) {
+                                        designAttributes.push({
+                                            attribute: attr.attribute,
+                                            attribute_value: attr.default_value,
+                                            from_range: attr.from_range,
+                                            to_range: attr.to_range,
+                                            increment: attr.increment,
+                                            options: JSON.stringify(attr.attribute_value),
+                                        });
+                                    }
 
+                                });
+
+                            });
+
+                            frappe.route_options = {
+                                is_template: true,
+                                plant_floor: LPlantFloor,
+                                design_configurator: designconfigurators,
+                                design_attributes: designAttributes
+                            };
+                            frappe.new_doc("Design");
                         }
-
-                        ldTreeview.page.fields_dict.design_attrbutes
                     }
-                })
-
-                frappe.route_options = {
-                    is_template: true,
-                    design_attrbutes: designAttributes
-                };
-                frappe.new_doc("Design");
+                });
             },
             __("Create")
         );
