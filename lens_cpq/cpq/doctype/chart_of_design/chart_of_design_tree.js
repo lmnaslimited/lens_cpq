@@ -120,20 +120,22 @@ frappe.treeview_settings["Chart of Design"] = {
     onload: function (ldTreeview) {
         frappe.treeview_settings["Chart of Design"].treeview = ldTreeview;
 
-        // Add an inner button labeled "Design" under the "Create" group in the page header
+        // Add inner button labeled "Design Template" inside the "Create" group in the page header
         ldTreeview.page.add_inner_button(
             __("Design Template"),
             function () {
+
+                // Retrieve selected Plant Floor from page filter
                 const LPlantFloor = ldTreeview.page.fields_dict.plant_floor.get_value();
 
+                // Enforce Plant Floor selection before template creation
                 if (!LPlantFloor) {
-                    frappe.throw(__("Please select a Plant Floor before creating a Design Template"));
+                    frappe.throw(__("Please select Plant Floor before creating Design Template"));
                 }
 
-                // Declare variable outside the callback
-                let designAttributes = [];
-                let designconfigurators = [];
+                let laDesignConfigurators = [];
 
+                // Invoke server API to fetch hierarchical Chart of Design data
                 frappe.call({
                     method: "frappe.desk.treeview.get_all_nodes",
                     args: {
@@ -144,49 +146,40 @@ frappe.treeview_settings["Chart of Design"] = {
                         is_root: true,
                         plant_floor: LPlantFloor,
                     },
-                    callback: function (response) {
-                        if (response.message) {
-                            let chartNode = response.message;
 
-                            chartNode.forEach((nodeValue) => {
-                                let parent = nodeValue.parent;
-                                let childData = nodeValue.data;
+                    callback: function (ldResponse) {
+                        if (ldResponse.message) {
 
-                                childData.forEach(attr => {
-                                    designconfigurators.push({
-                                        parent_chart_of_design: parent,
-                                        label: attr.label,
-                                        is_group: attr.expandable,
-                                        attribute: attr.attribute,
-                                        from_range: attr.from_range,
-                                        to_range: attr.to_range,
-                                        increment: attr.increment,
-                                        default_value: attr.default_value,
-                                        options: JSON.stringify(attr.attribute_value),
-                                    })
+                            let laChartNodes = ldResponse.message;
 
+                            // Prepare design_configurators child table data
+                            laChartNodes.forEach((ldNode) => {
+                                let lParent = ldNode.parent;
+                                let laChildData = ldNode.data;
 
-                                    if (!attr.expandable) {
-                                        designAttributes.push({
-                                            attribute: attr.attribute,
-                                            attribute_value: attr.default_value,
-                                            from_range: attr.from_range,
-                                            to_range: attr.to_range,
-                                            increment: attr.increment,
-                                            options: JSON.stringify(attr.attribute_value),
-                                        });
-                                    }
-
+                                laChildData.forEach(ldAttr => {
+                                    laDesignConfigurators.push({
+                                        parent_chart_of_design: lParent,
+                                        label: ldAttr.label,
+                                        is_group: ldAttr.expandable,
+                                        attribute: ldAttr.attribute,
+                                        from_range: ldAttr.from_range,
+                                        to_range: ldAttr.to_range,
+                                        increment: ldAttr.increment,
+                                        default_value: ldAttr.default_value,
+                                        options: JSON.stringify(ldAttr.attribute_value),
+                                    });
                                 });
-
                             });
 
+                            // Set default values for new Design document (Template)
                             frappe.route_options = {
                                 is_template: true,
                                 plant_floor: LPlantFloor,
-                                design_configurator: designconfigurators,
-                                design_attributes: designAttributes
+                                design_configurator: laDesignConfigurators,
                             };
+
+                            // Trigger creation of new Design document (Template)
                             frappe.new_doc("Design");
                         }
                     }
@@ -194,6 +187,7 @@ frappe.treeview_settings["Chart of Design"] = {
             },
             __("Create")
         );
+
 
         /*
        * Purpose - Show a dialog to create a new node in the Chart of Design tree.

@@ -2,16 +2,24 @@ import frappe
 from frappe.utils import cint
 
 @frappe.whitelist()
-# Whitelist this function to make it accessible via Frappe client calls (e.g., from JS)
-# Function to get hierarchical children nodes for a given Doctype, optionally filtered by plant_floor or root
-# Incoming variable on runtime by framework
+"""
+    Return hierarchical nodes for a given DocType to support tree-based UI rendering.
+
+    This function retrieves child nodes based on the specified parent and root-level
+    configuration. It also merges attribute metadata (value, abbr, exclude) into a
+    grouped node structure that aligns with Frappe's TreeView requirements.
+
+    Args:
+        doctype (str): The DocType to fetch nodes from.
+        parent (str): Parent node identifier.
+        is_root (bool): Indicates whether root-level nodes should be fetched.
+        plant_floor (str): Selected Plant Floor.
+
+    Returns:
+        list[dict]: List of consolidated node dictionaries formatted for TreeView.
+"""
 def fn_get_children(doctype, parent=None, is_root=False, plant_floor=None, **kwargs):
     
-    # print(is_root)
-    # print(doctype)
-    # print(parent)
-    # print(plant_floor)
-
     # Determine the parent field name dynamically (e.g., parent_machine_node)
     l_parent_fieldname = "parent_" + frappe.scrub(doctype)
 
@@ -49,19 +57,28 @@ def fn_get_children(doctype, parent=None, is_root=False, plant_floor=None, **kwa
 
     ld_grouped_nodes = {}
 
+    # Iterate through the fetched node records and consolidate attribute values
     for ld_row in la_nodes:
-        l_key = ld_row["value"]
+        # Unique identifier for grouping
+        l_key = ld_row["value"]  
 
+        #  If node is seen for the first time:  initialize its consolidated structure
         if l_key not in ld_grouped_nodes:
             ld_node = ld_row.copy()
-            ld_node["attribute_value"] = []
+
+            # Container for aggregated attribute-values
+            ld_node["attribute_value"] = []  
+            
+            # Construct label using attribute and abbreviation
             ld_node["label"] = f"{ld_row['attribute']} - {ld_row['root_abbr']}" if ld_row.get("root_abbr") else ld_row["attribute"]
 
+            # Remove first copy of child table fields
             ld_node.pop("abbr", None)
             ld_node.pop("exclude", None)
 
             ld_grouped_nodes[l_key] = ld_node
 
+        #   Insert each attribute-value pair into the node’s grouped list
         if ld_row.get("attribute_value"):
             ld_grouped_nodes[l_key]["attribute_value"].append({
                 "attribute_value": ld_row["attribute_value"],
@@ -69,7 +86,6 @@ def fn_get_children(doctype, parent=None, is_root=False, plant_floor=None, **kwa
                 "exclude": ld_row["exclude"]
             })
 
-    # print(ld_grouped_nodes)
     return list(ld_grouped_nodes.values())
 
 """

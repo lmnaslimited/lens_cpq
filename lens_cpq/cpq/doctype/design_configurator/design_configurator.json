@@ -21,8 +21,7 @@
    "columns": 2,
    "fieldname": "label",
    "fieldtype": "Data",
-   "label": "Label",
-   "unique": 1
+   "label": "Label"
   },
   {
    "columns": 2,
@@ -75,7 +74,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-11-14 12:29:45.456338",
+ "modified": "2025-11-17 12:19:58.231712",
  "modified_by": "Administrator",
  "module": "CPQ",
  "name": "Design Configurator",
