@@ -1,6 +1,7 @@
 from lens_cpq.condition_class.controller import Controller
 
 class ClViewController(Controller):
+    # commented out on review 2
     # def __init__(self, doctype, event, events):
     #     # super().__init__(doctype, event, events) 
     #     # calling the super creating a circular dependency

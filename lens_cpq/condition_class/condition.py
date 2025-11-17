@@ -20,11 +20,11 @@ class ClCondtions(IfCondtions, ABC):
 
     
 class ClInputFieldConditons(Iffieldcondtions, ABC):
-    def __init__(self, doctype:str, fieldname:str, value:Any, condtionfieldRecord: Dict):
+    def __init__(self, doctype:str, field_name:str, value:Any, condtion_field_record: Dict):
         self.doctype = doctype
-        self.fieldname = fieldname
+        self.field_name = field_name
         self.value = value
-        self.condtionfieldRecord = condtionfieldRecord
+        self.condtion_field_record = condtion_field_record
     
     @abstractmethod
     def evaluate(self):

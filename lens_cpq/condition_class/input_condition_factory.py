@@ -7,16 +7,16 @@ from typing import Dict, Any
 
 class InputFieldConditionFactory:
     @staticmethod
-    def create(doctype: str, fieldname: str, value: Any, condition_field_record: Dict[str, Any]) -> ClInputFieldConditons:
+    def create(doctype: str, field_name: str, value: Any, condition_field_record: Dict[str, Any]) -> ClInputFieldConditons:
         eval_type = condition_field_record.get("field_evalutionType", "").lower()
         print(f"[Factory] Creating input field condition for type: {eval_type}")
         if eval_type == "constant":
-            return ClConstantInputfieldCondtions(doctype, fieldname, value, condition_field_record)
+            return ClConstantInputfieldCondtions(doctype, field_name, value, condition_field_record)
         elif eval_type == "api":
-            return ClApiInputfieldCondtions(doctype, fieldname, value, condition_field_record)
+            return ClApiInputfieldCondtions(doctype, field_name, value, condition_field_record)
         elif eval_type == "formula":
-            return ClFormulaInputfieldCondtions(doctype, fieldname, value, condition_field_record)
+            return ClFormulaInputfieldCondtions(doctype, field_name, value, condition_field_record)
         elif eval_type == "condition":
-            return ClConditionInputfieldCondtions(doctype, fieldname, value, condition_field_record)
+            return ClConditionInputfieldCondtions(doctype, field_name, value, condition_field_record)
         else:
             raise ValueError(f"Unknown field_evalutionType: {eval_type}")

@@ -5,6 +5,7 @@ from typing import List
 
 class ClModelController(Controller):
     conditions: List[IfCondtions]
+    
     def __init__(self, doctype, event, events):
         # super().__init__(doctype, event, events)
         # calling the super creating a circular dependency

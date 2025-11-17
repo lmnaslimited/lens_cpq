@@ -5,8 +5,8 @@ from abc import abstractmethod
 # from lens_cpq.condition_class.model_controller import ClModelController
 
 class Controller(Ifcontroller):
-    viewcontroller: Ifcontroller
-    modelcontrller: Ifcontroller
+    view_controller: Ifcontroller
+    model_controller: Ifcontroller
     doctype: str
     event: str
     event_fields: Union[list, str]
@@ -27,8 +27,8 @@ class Controller(Ifcontroller):
         self.event = event
         self.event_fields = events
         # commented on Day 2 review
-        # self.viewcontroller =  ClViewController(doctype, event, events)
-        # self.modelcontroller = ClModelController(doctype, event, events)
+        # self.view_controller =  ClViewController(doctype, event, events)
+        # self.model_controller = ClModelController(doctype, event, events)
 
     # @abstractmethod
     # TypeError: Can't instantiate abstract class Controller with abstract method execute
@@ -40,13 +40,13 @@ class Controller(Ifcontroller):
         from lens_cpq.condition_class.view_controller import ClViewController
         from lens_cpq.condition_class.model_controller import ClModelController
 
-        self.viewcontroller =  ClViewController(self.doctype, self.event, self.event_fields)
-        self.modelcontroller = ClModelController(self.doctype, self.event, self.event_fields)
+        self.view_controller =  ClViewController(self.doctype, self.event, self.event_fields)
+        self.model_controller = ClModelController(self.doctype, self.event, self.event_fields)
 
     def execute(self):
         print(f"[Controller] State changed detected, calling ModelController,  : {self.doctype}")
-        if self.viewcontroller.is_sate_changed():
+        if self.view_controller.is_sate_changed():
             print("[Controller] State changed detected, calling ModelController")
-            # self.modelcontroller.execute()
+            # self.model_controller.execute()
         else:
             print("[Controller] No state change, skipping ModelController")
