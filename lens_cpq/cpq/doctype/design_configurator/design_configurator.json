@@ -14,7 +14,8 @@
   "to_range",
   "increment",
   "options",
-  "parent_node"
+  "parent_node",
+  "attribute_value"
  ],
  "fields": [
   {
@@ -67,13 +68,18 @@
    "fieldname": "parent_node",
    "fieldtype": "Data",
    "label": "Parent"
+  },
+  {
+   "fieldname": "attribute_value",
+   "fieldtype": "Data",
+   "label": "Attribute Value"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-11-18 10:51:17.701848",
+ "modified": "2025-11-18 14:58:02.007723",
  "modified_by": "Administrator",
  "module": "CPQ",
  "name": "Design Configurator",

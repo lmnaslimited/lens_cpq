@@ -53,7 +53,7 @@ def fn_get_children(doctype, parent=None, is_root=False, plant_floor=None, **kwa
         la_filters.append([l_parent_fieldname, "=", parent])
     
     # Fetch the list of child nodes with the specified filters
-    la_nodes = frappe.get_list(doctype, fields=la_fields, filters=la_filters)
+    la_nodes = frappe.get_all(doctype, fields=la_fields, filters=la_filters)
 
     ld_grouped_nodes = {}
 
