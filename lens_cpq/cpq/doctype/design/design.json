@@ -6,6 +6,10 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "tree_tab",
+  "design_tree",
+  "design_configurator",
+  "details_tab",
   "naming_series",
   "is_template",
   "column_break_vvrr",
@@ -15,9 +19,6 @@
   "section_break_iuqk",
   "dynamic_fields",
   "design_attributes",
-  "design_configurator",
-  "tree_tab",
-  "design_tree",
   "item_tab",
   "item"
  ],
@@ -101,12 +102,17 @@
    "fieldname": "plant_floor",
    "fieldtype": "Data",
    "label": "Plant Floor"
+  },
+  {
+   "fieldname": "details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Details"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-11-14 14:08:07.685698",
+ "modified": "2025-11-18 12:11:24.776071",
  "modified_by": "Administrator",
  "module": "CPQ",
  "name": "Design",

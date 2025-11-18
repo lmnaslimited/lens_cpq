@@ -3,8 +3,15 @@ let lIsUpdatingFields = false;
 let ldFieldFilteredOptions = {};
 frappe.ui.form.on('Design', {
     refresh(frm) {
+
+        if (frm.doc.design_template && frm.doc.template_name) {
+            if (!frappe.design_configurator || frappe.design_configurator.design_configurator !== frm.doc.name) {
+                frm.trigger("build_tree");
+            }
+        }
+
         if (frm.doc.design_template) {
-        
+
             frm.events.fnFetchAndRenderTemplateFields(frm);
 
             // After refreshing the form, update the options based on the condition value 
@@ -50,19 +57,19 @@ frappe.ui.form.on('Design', {
                 });
             });
         }
-        if(frm.doc.item){
-            frm.add_custom_button(__("View Item"), function(){
+        if (frm.doc.item) {
+            frm.add_custom_button(__("View Item"), function () {
                 frappe.set_route("item", frm.doc.item)
             })
-        }else{
-            frm.add_custom_button(__("Create Item"), function(){
+        } else {
+            frm.add_custom_button(__("Create Item"), function () {
                 frappe.call({
-                    method:"lens_cpq.cpq.doctype.design.api.fn_create_item_from_design",
-                    args:{
+                    method: "lens_cpq.cpq.doctype.design.api.fn_create_item_from_design",
+                    args: {
                         design_name: frm.doc.name
                     },
-                    callback: function(ldResponse){
-                        if(ldResponse.message){
+                    callback: function (ldResponse) {
+                        if (ldResponse.message) {
                             frm.set_value("item", ldResponse.message)
                             frm.save()
                         }
@@ -71,6 +78,21 @@ frappe.ui.form.on('Design', {
                 })
             })
         }
+    },
+
+    design_tree(frm) {
+        let $parent = $(frm.fields_dict["design_tree"].wrapper);
+        $parent.empty();
+        // frm.toggle_enable("item_code", false);
+
+        frappe.require("design_configurator.bundle.js").then(() => {
+            frappe.design_configurator = new frappe.ui.DesignConfigurator({
+                wrapper: $parent,
+                page: $parent,
+                frm: frm,
+                design_configurator: frm.doc.name,
+            });
+        });
     },
 
     design_template(frm) {
@@ -98,7 +120,7 @@ frappe.ui.form.on('Design', {
     },
 
     // Maps each field with its saved value or fallback to default/min
-        fnMapFieldswithValues(frm, iaFields) {
+    fnMapFieldswithValues(frm, iaFields) {
         return iaFields.map(ldField => {
             const ldRow = (frm.doc.design_attributes || []).find(
                 ldResponse => ldResponse.attribute.replace(/ /g, "_").toLowerCase() === ldField.fieldname
@@ -206,7 +228,7 @@ frappe.ui.form.on('Design', {
                     $elNumber.on("input", () => fnsyncFields($elNumber, $elRange));
                     $elRange.on("input", () => fnsyncFields($elRange, $elNumber));
                 } else {
-                    
+
                     $elDynamicWrapper.find(`.select-field[data-fieldname="${LescapedFieldname}"]`)
                         .on("change", function () {
                             frm.events.fnUpdateDesignAttribute(frm, label, this.value, ldField);
@@ -215,7 +237,6 @@ frappe.ui.form.on('Design', {
             });
         });
     },
-
 
     fnUpdateDesignAttribute(frm, iFieldname, iValue, fields = []) {
         if (lIsUpdatingFields) return;
@@ -240,77 +261,77 @@ frappe.ui.form.on('Design', {
                     lIsUpdatingFields = false;
                     return;
                 }
-    
+
                 const LaConditionResults = ldResponse.message[0]?.target || [];
-              
+
                 // Step 3: Apply all returned condition results to design_attributes and UI
                 for (let ldResult of LaConditionResults) {
-                   
-                        const LTargetField = ldResult.fieldName;
-                        const LTargetValue = ldResult.value;
-                        const laOptions = ldResult.options || [];
-                        
-                        // Update or add the field in design_attributes child table
-                        let ldTargetRow = (frm.doc.design_attributes || []).find(
-                            ldRow => ldRow.attribute.toLowerCase() === LTargetField.toLowerCase()
+
+                    const LTargetField = ldResult.fieldName;
+                    const LTargetValue = ldResult.value;
+                    const laOptions = ldResult.options || [];
+
+                    // Update or add the field in design_attributes child table
+                    let ldTargetRow = (frm.doc.design_attributes || []).find(
+                        ldRow => ldRow.attribute.toLowerCase() === LTargetField.toLowerCase()
+                    );
+
+                    if (!ldTargetRow) {
+                        ldTargetRow = frm.add_child('design_attributes', {
+                            attribute: LTargetField
+                        });
+                    }
+                    if (LTargetValue) {
+                        frappe.model.set_value(ldTargetRow.doctype, ldTargetRow.name, 'attribute_value', LTargetValue);
+                    }
+
+                    // ldFieldFilteredOptions[LTargetField] = laOptions.map(opt => ({
+                    //     label: opt,
+                    //     value: opt
+                    // }));
+
+                    ldFieldFilteredOptions[LTargetField.replace(/ /g, "_").toLowerCase()] = laOptions.map(iOpt => ({
+                        label: iOpt,
+                        value: iOpt
+                    }));
+
+                    // ✅ the fnRenderDynamicSlider logic is reused
+                    const $wrapper = $(frm.fields_dict["dynamic_fields"].$wrapper.get(0));
+                    const LescapedFieldname = CSS.escape(LTargetField.replaceAll(" ", "_").toLowerCase());
+                    const $select = $wrapper.find(`.select-field[data-fieldname="${LescapedFieldname}"]`);
+                    const $elRange = $wrapper.find(`.range-field[data-fieldname="${LescapedFieldname}"]`);
+                    const $elNumber = $wrapper.find(`.number-field[data-fieldname="${LescapedFieldname}"]`);
+                    const $elError = $elNumber.next('.text-danger');
+
+
+                    if ($select.length && laOptions.length > 0) {
+                        fields.options = laOptions
+                        $select.empty();
+                        laOptions.forEach(opt => {
+                            const $opt = $('<option>')
+                                .val(opt)
+                                .text(opt);
+                            if (opt === LTargetValue) {
+                                $opt.prop('selected', true);
+                            }
+                            $select.append($opt);
+                        });
+                    } else if ($elRange.length) {
+                        const lValid = frm.events.fnValidateAndUpdateNumericInput(
+                            frm, LTargetField, LTargetValue, $elRange.get(0), $elNumber.get(0), $elError.get(0)
                         );
-                       
-                        if (!ldTargetRow) {
-                            ldTargetRow = frm.add_child('design_attributes', {
-                                attribute: LTargetField
-                            });
-                        }
-                        if(LTargetValue){
-                            frappe.model.set_value(ldTargetRow.doctype, ldTargetRow.name, 'attribute_value', LTargetValue);
-                        }
-                        
-                        // ldFieldFilteredOptions[LTargetField] = laOptions.map(opt => ({
-                        //     label: opt,
-                        //     value: opt
-                        // }));
+                        if (lValid) $elRange.val(LTargetValue);
 
-                        ldFieldFilteredOptions[LTargetField.replace(/ /g, "_").toLowerCase()] = laOptions.map(iOpt => ({
-                            label: iOpt,
-                            value: iOpt
-                        }));
+                    } else {
+                        frm.events.fnFetchAndRenderTemplateFields(frm)
+                    }
 
-                        // ✅ the fnRenderDynamicSlider logic is reused
-                        const $wrapper = $(frm.fields_dict["dynamic_fields"].$wrapper.get(0));
-                        const LescapedFieldname = CSS.escape(LTargetField.replaceAll(" ","_").toLowerCase());
-                        const $select =  $wrapper.find(`.select-field[data-fieldname="${LescapedFieldname}"]`);
-                        const $elRange = $wrapper.find(`.range-field[data-fieldname="${LescapedFieldname}"]`);
-                        const $elNumber = $wrapper.find(`.number-field[data-fieldname="${LescapedFieldname}"]`);
-                        const $elError = $elNumber.next('.text-danger');
-                        
-
-                        if ($select.length && laOptions.length > 0) {
-                            fields.options = laOptions
-                            $select.empty();
-                            laOptions.forEach(opt => {
-                                const $opt = $('<option>')
-                                    .val(opt)
-                                    .text(opt);
-                                if (opt === LTargetValue) {
-                                    $opt.prop('selected', true);
-                                }
-                                $select.append($opt);
-                            });
-                        } else if ($elRange.length) {
-                            const lValid = frm.events.fnValidateAndUpdateNumericInput(
-                                frm, LTargetField, LTargetValue, $elRange.get(0), $elNumber.get(0), $elError.get(0)
-                            );
-                            if(lValid) $elRange.val(LTargetValue);
-                            
-                        }else{
-                            frm.events.fnFetchAndRenderTemplateFields(frm)
-                        }
-           
                 }
-                lIsUpdatingFields = false; 
+                lIsUpdatingFields = false;
                 frm.events.fnFetchAndRenderTemplateFields(frm)
             }
         });
-    },    
+    },
 
     // Validates the numeric input value and shows an error message if it is out of range
     // Removes the field from the error list if the value is valid
@@ -324,11 +345,11 @@ frappe.ui.form.on('Design', {
             lErrorMessage = __("Value is required");
         } else if (iValue < lMin || iValue > lMax) {
             lErrorMessage = __(`Value must be between ${lMin} and ${lMax}`);
-        } else{
+        } else {
             const lQuotient = (iValue - lMin) / lStep;
             const lIsStepValid = Math.abs(lQuotient - Math.round(lQuotient)) < 1e-6;
             if (!lIsStepValid) {
-            lErrorMessage = __(`Value should increment by ${lStep}`);
+                lErrorMessage = __(`Value should increment by ${lStep}`);
             }
         }
 
