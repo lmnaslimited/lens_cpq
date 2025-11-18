@@ -2,22 +2,22 @@ import frappe
 from frappe.utils import cint
 
 @frappe.whitelist()
-"""
-    Return hierarchical nodes for a given DocType to support tree-based UI rendering.
 
-    This function retrieves child nodes based on the specified parent and root-level
-    configuration. It also merges attribute metadata (value, abbr, exclude) into a
-    grouped node structure that aligns with Frappe's TreeView requirements.
+# Return hierarchical nodes for a given DocType to support tree-based UI rendering.
 
-    Args:
-        doctype (str): The DocType to fetch nodes from.
-        parent (str): Parent node identifier.
-        is_root (bool): Indicates whether root-level nodes should be fetched.
-        plant_floor (str): Selected Plant Floor.
+# This function retrieves child nodes based on the specified parent and root-level
+# configuration. It also merges attribute metadata (value, abbr, exclude) into a
+# grouped node structure that aligns with Frappe's TreeView requirements.
 
-    Returns:
-        list[dict]: List of consolidated node dictionaries formatted for TreeView.
-"""
+# Args:
+#     doctype (str): The DocType to fetch nodes from.
+#     parent (str): Parent node identifier.
+#     is_root (bool): Indicates whether root-level nodes should be fetched.
+#     plant_floor (str): Selected Plant Floor.
+
+# Returns:
+#     list[dict]: List of consolidated node dictionaries formatted for TreeView.
+
 def fn_get_children(doctype, parent=None, is_root=False, plant_floor=None, **kwargs):
     
     # Determine the parent field name dynamically (e.g., parent_machine_node)

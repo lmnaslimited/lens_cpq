@@ -159,7 +159,7 @@ frappe.treeview_settings["Chart of Design"] = {
 
                                 laChildData.forEach(ldAttr => {
                                     laDesignConfigurators.push({
-                                        parent_chart_of_design: lParent,
+                                        parent_node: lParent,
                                         label: ldAttr.label,
                                         is_group: ldAttr.expandable,
                                         attribute: ldAttr.attribute,

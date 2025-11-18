@@ -8,13 +8,13 @@
  "field_order": [
   "label",
   "is_group",
-  "parent_chart_of_design",
   "attribute",
   "default_value",
   "from_range",
   "to_range",
   "increment",
-  "options"
+  "options",
+  "parent_node"
  ],
  "fields": [
   {
@@ -22,12 +22,6 @@
    "fieldname": "label",
    "fieldtype": "Data",
    "label": "Label"
-  },
-  {
-   "columns": 2,
-   "fieldname": "parent_chart_of_design",
-   "fieldtype": "Data",
-   "label": "Parent Chart of Design"
   },
   {
    "columns": 1,
@@ -68,13 +62,18 @@
    "fieldname": "options",
    "fieldtype": "JSON",
    "label": "Options"
+  },
+  {
+   "fieldname": "parent_node",
+   "fieldtype": "Data",
+   "label": "Parent"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-11-17 12:19:58.231712",
+ "modified": "2025-11-18 10:51:17.701848",
  "modified_by": "Administrator",
  "module": "CPQ",
  "name": "Design Configurator",
