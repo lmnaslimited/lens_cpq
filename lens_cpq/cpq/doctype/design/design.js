@@ -4,11 +4,10 @@ let ldFieldFilteredOptions = {};
 frappe.ui.form.on('Design', {
     refresh(frm) {
 
-        if (frm.doc.design_template && frm.doc.template_name) {
-            if (!frappe.design_configurator || frappe.design_configurator.design_configurator !== frm.doc.name) {
-                frm.trigger("build_tree");
-            }
+        if (!frappe.design_configurator || frappe.design_configurator.design_configurator !== frm.doc.name) {
+            frm.trigger("design_tree");
         }
+        
 
         if (frm.doc.design_template) {
 

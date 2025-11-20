@@ -157,3 +157,59 @@ def fn_create_item_from_design(design_name):
     # ld_item_price.price_list_rate = ld_design_doc.total_cost
     # ld_item_price.insert()
     return ld_item_variant.item_code
+
+@frappe.whitelist()
+def get_children(doctype=None, parent=None, **kwargs):
+    print("Doctype", doctype)
+    print("parent", parent)
+
+    if isinstance(kwargs, str):
+        kwargs = frappe.parse_json(kwargs)
+
+    if isinstance(kwargs, dict):
+        kwargs = frappe._dict(kwargs)
+
+    fields = [
+        "label as value",
+        "is_group",
+        "parent_node as parent_id",
+        "attribute",
+        "from_range",
+        "to_range",
+        "increment",
+        "default_value",
+        "options",
+    ]
+
+    query_filters = {
+        "parent_node": parent,
+        # "parent": kwargs.parent_id,
+    }
+
+    print("filter", query_filters)
+
+    if kwargs.name:
+        query_filters["name"] = kwargs.name
+
+    print("filter with name", query_filters)
+
+    la_config_items = frappe.get_all(
+        "Design Configurator",
+        fields=fields,
+        filters=query_filters,
+        order_by="idx asc"
+    )
+
+    print("get all", la_config_items)
+
+    for ld_config_item in la_config_items:
+        ld_variant_attrs = frappe.get_all(
+            "Item Variant Attribute",
+            fields=["attribute", "attribute_value", "idx"],
+            filters={"parent": ld_config_item.get("value")},
+            order_by="idx asc"
+        )
+
+        ld_config_item["attributes"] = ld_variant_attrs
+
+    return la_config_items
