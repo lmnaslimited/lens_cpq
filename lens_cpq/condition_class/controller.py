@@ -1,8 +1,9 @@
 from lens_cpq.condition_class.interface import Ifcontroller
-from typing import Union
+from typing import List, Union
 # from abc import abstractmethod
 # from lens_cpq.condition_class.view_controller import ClViewController
 # from lens_cpq.condition_class.model_controller import ClModelController
+from lens_cpq.condition_class.interface import IfCondtions
 
 class Controller(Ifcontroller):
 
@@ -29,6 +30,7 @@ class Controller(Ifcontroller):
         self.event_fields = events
         # commented on Day 2 review
         self.view_controller =  ViewModelFactory.get_controller("view_controller", ClViewController,doctype, event, events)
+        self.model_controller =  ViewModelFactory.get_controller("model_controller", ClModelController,doctype, event, events)
         # self.view_controller = ClViewController(doctype, event, events)
         # self.model_controller = ClModelController(doctype, event, events)
 
@@ -46,12 +48,12 @@ class Controller(Ifcontroller):
     #     self.model_controller = ClModelController(self.doctype, self.event, self.event_fields)
 
     def execute(self):
-        print(f"[Controller] State changed detected, calling ModelController,  : {self.doctype}")
+        print(f"[Controller] State changed detected, checking is state change for,  : {self.doctype}")
         if self.view_controller.is_sate_changed():
             print("[Controller] State changed detected, calling ModelController")
-            # self.model_controller.execute()
-        # else:
-        #     print("[Controller] No state change, skipping ModelController")
+            self.model_controller.execute()
+        else:
+            print("[Controller] No state change, skipping ModelController")
 
     
 class ClViewController(Controller):
@@ -71,6 +73,34 @@ class ClViewController(Controller):
 
     def execute(self):
         print("[ViewController] Executing view logic")
+
+
+class ClModelController(Controller):
+    conditions: List[IfCondtions]
+    
+    def __init__(self, doctype, event, events):
+        # super().__init__(doctype, event, events)
+        # calling the super creating a circular dependency
+        self.doctype = doctype
+        self.event = event
+        self.events = events
+    
+    def execute(self):
+        print("[ModelController] Executing model logic...")
+
+        # # 
+        # # dummy record to simulate the condition value's input value
+        # records = [
+        #     {"field_evalutionType": "constant"},
+        #     {"field_evalutionType": "api"},
+        #     {"field_evalutionType": "formula"},
+        # ]
+
+        # for record in records:
+        #     condition = InputFieldConditionFactory.create("Quotation", "discount", 10, record)
+        #     print(f"[ModelController] Created condition of type: {record['field_evalutionType']}")
+        #     condition.evaluate()
+        # #
 
 
 class ViewModelFactory:
