@@ -1,6 +1,6 @@
 from lens_cpq.condition_class.interface import Ifcontroller
-from typing import List, Union
-from abc import abstractmethod
+from typing import Union
+# from abc import abstractmethod
 # from lens_cpq.condition_class.view_controller import ClViewController
 # from lens_cpq.condition_class.model_controller import ClModelController
 
@@ -56,12 +56,12 @@ class Controller(Ifcontroller):
     
 class ClViewController(Controller):
     # commented out on review 2
-    # def __init__(self, doctype, event, events):
-    #     # super().__init__(doctype, event, events) 
-    #     # calling the super creating a circular dependency
-    #     self.doctype = doctype
-    #     self.event = event
-    #     self.events = events
+    def __init__(self, doctype, event, events):
+        # super().__init__(doctype, event, events) 
+        # calling the super creating a circular dependency
+        self.doctype = doctype
+        self.event = event
+        self.events = events
     
     # this function is for checking if field was changed by user or condition type 
     # (final / need to trigger another condition sequence)
@@ -72,23 +72,32 @@ class ClViewController(Controller):
     def execute(self):
         print("[ViewController] Executing view logic")
 
-_instances = {}
 
 class ViewModelFactory:
-
+    # found the cause why the view controller keep on instantiating 
+    # without retaining
+    # because on first call of this factory the _instance is {}
+    # it call the veiwController but view controller doesn't
+    # has a constructor (__init__), so python but default calls its super
+    # since it implement controller calls, it call its __init__
+    # and there it will call the factory again, eventhough the factory is not reinstantiated because we never called 
+    # ViewModelFactory(), but only its class method ViewModelFactory.get_controller()
+    # the _instance was never set because the view controller was never instantiated
+    # that why this made a endless loop
+    _instances = {}
     @classmethod
     def get_controller(cls, key, clazz, doctype, event, event_fields):
         """Returns existing instance if available, else creates new one."""
         
         # Check if an instance already exists
-        if key in _instances:
-            result = _instances[key]
+        if key in cls._instances:
+            result = cls._instances[key]
             return result
 
         # Instantiate a new controller
         instance = clazz(doctype, event, event_fields)
 
         # Store it for reuse
-        _instances[key] = instance
+        cls._instances[key] = instance
         
         return instance
