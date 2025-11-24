@@ -52,7 +52,7 @@
         title: __("Design Configurator"),
         breadcrumb: "Manufacturing",
         get_tree_nodes: "lens_cpq.cpq.doctype.design.api.get_children",
-        root_label: this.frm.doc.plant_floor,
+        root_label: this.frm.doc.template_name,
         disable_add_node: true,
         get_tree_root: false,
         show_expand_all: false,
@@ -75,14 +75,19 @@
       let frm_obj = this;
       return {
         onload: function(me) {
-          me.args["plant_floor"] = frm_obj.frm.doc.plant_floor;
+          me.args["parent_id"] = frm_obj.frm.doc.name;
+          me.args["plant_floor"] = frm_obj.frm.doc.template_name;
           me.parent = frm_obj.$wrapper.get(0);
           me.body = frm_obj.$wrapper.get(0);
           me.make_tree();
+        },
+        on_node_click: function(node) {
+          frappe.msgprint(`Opening form for node: ${node.value}`);
+          frappe.set_route("Form", "Design Configurator", node.value);
         }
       };
     }
   };
   frappe.ui.DesignConfigurator = DesignConfigurator;
 })();
-//# sourceMappingURL=design_configurator.bundle.YETKVAY2.js.map
+//# sourceMappingURL=design_configurator.bundle.F4FHIT5N.js.map

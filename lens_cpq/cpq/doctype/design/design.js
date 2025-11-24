@@ -4,8 +4,9 @@ let ldFieldFilteredOptions = {};
 frappe.ui.form.on('Design', {
     refresh(frm) {
 
-        if (!frappe.design_configurator || frappe.design_configurator.design_configurator !== frm.doc.name) {
-            frm.trigger("design_tree");
+        // if (!frappe.design_configurator || frappe.design_configurator.design_configurator !== frm.doc.name) {
+        if(frm.doc.template_name){
+            frm.trigger("build_tree");
         }
         
 
@@ -79,7 +80,7 @@ frappe.ui.form.on('Design', {
         }
     },
 
-    design_tree(frm) {
+    build_tree(frm) {
         let $parent = $(frm.fields_dict["design_tree"].wrapper);
         $parent.empty();
         // frm.toggle_enable("item_code", false);
