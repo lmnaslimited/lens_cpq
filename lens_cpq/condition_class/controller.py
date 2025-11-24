@@ -8,7 +8,7 @@ from lens_cpq.condition_class.interface import IfCondtions
 class Controller(Ifcontroller):
 
     view_controller: Ifcontroller
-    # model_controller: Ifcontroller
+    model_controller: Ifcontroller
     doctype: str
     event: str
     event_fields: Union[list, str]
@@ -29,10 +29,14 @@ class Controller(Ifcontroller):
         self.event = event
         self.event_fields = events
         # commented on Day 2 review
-        self.view_controller =  ViewModelFactory.get_controller("view_controller", ClViewController,doctype, event, events)
-        self.model_controller =  ViewModelFactory.get_controller("model_controller", ClModelController,doctype, event, events)
+        # self.view_controller =  ViewModelFactory.get_controller("view_controller", ClViewController,doctype, event, events)
+        # self.model_controller =  ViewModelFactory.get_controller("model_controller", ClModelController,doctype, event, events)
         # self.view_controller = ClViewController(doctype, event, events)
         # self.model_controller = ClModelController(doctype, event, events)
+
+    def set_model_and_view(self, view_instance, model_instance):
+        self.view_controller = view_instance
+        self.model_controller = model_instance
 
     # @abstractmethod
     # TypeError: Can't instantiate abstract class Controller with abstract method execute
@@ -57,13 +61,14 @@ class Controller(Ifcontroller):
 
     
 class ClViewController(Controller):
+
     # commented out on review 2
     def __init__(self, doctype, event, events):
-        # super().__init__(doctype, event, events) 
+        super().__init__(doctype, event, events) 
         # calling the super creating a circular dependency
-        self.doctype = doctype
-        self.event = event
-        self.events = events
+        # self.doctype = doctype
+        # self.event = event
+        # self.events = events
     
     # this function is for checking if field was changed by user or condition type 
     # (final / need to trigger another condition sequence)
@@ -73,20 +78,31 @@ class ClViewController(Controller):
 
     def execute(self):
         print("[ViewController] Executing view logic")
+    
+    def set_model_and_view(self, view_instance, model_instance):
+        self.view_controller = view_instance
+        self.model_controller = model_instance
+        self.test_model = ViewModelFactory.get_controller("model_controller", ClModelController,self.doctype, self.event, self.event_fields)
+
 
 
 class ClModelController(Controller):
     conditions: List[IfCondtions]
     
     def __init__(self, doctype, event, events):
-        # super().__init__(doctype, event, events)
+        super().__init__(doctype, event, events)
         # calling the super creating a circular dependency
-        self.doctype = doctype
-        self.event = event
-        self.events = events
+        # self.doctype = doctype
+        # self.event = event
+        # self.events = events
     
     def execute(self):
         print("[ModelController] Executing model logic...")
+    
+    def set_model_and_view(self, view_instance, model_instance):
+        self.view_controller = view_instance
+        self.model_controller = model_instance
+
 
         # # 
         # # dummy record to simulate the condition value's input value
@@ -109,7 +125,7 @@ class ViewModelFactory:
     # because on first call of this factory the _instance is {}
     # it call the veiwController but view controller doesn't
     # has a constructor (__init__), so python but default calls its super
-    # since it implement controller calls, it call its __init__
+    # since it implement controller, calls, it call its __init__
     # and there it will call the factory again, eventhough the factory is not reinstantiated because we never called 
     # ViewModelFactory(), but only its class method ViewModelFactory.get_controller()
     # the _instance was never set because the view controller was never instantiated
