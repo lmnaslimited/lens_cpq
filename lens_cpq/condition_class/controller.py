@@ -85,7 +85,6 @@ class ClViewController(Controller):
         self.test_model = ViewModelFactory.get_controller("model_controller", ClModelController,self.doctype, self.event, self.event_fields)
 
 
-
 class ClModelController(Controller):
     conditions: List[IfCondtions]
     
@@ -141,9 +140,28 @@ class ViewModelFactory:
             return result
 
         # Instantiate a new controller
-        instance = clazz(doctype, event, event_fields)
+        # instance = clazz(doctype, event, event_fields)
+        instance = cls.instantiate_controller(cls, key, doctype, event, event_fields)
 
         # Store it for reuse
-        cls._instances[key] = instance
+        # cls._instances[key] = instance
         
         return instance
+    
+
+    # function to Instantiate a new controllers
+    def instantiate_controller(cls,key, doctype, event, event_fields):
+
+        instance_controller = Controller(doctype, event, event_fields)
+        instance_model = ClModelController(doctype,event, event_fields)
+        instance_view = ClViewController(doctype, event, event_fields)
+
+        cls._instances["controller"] = instance_controller
+        cls._instances["view_controller"] = instance_model
+        cls._instances["model_controller"] = instance_view
+
+        instance_controller.set_model_and_view(instance_view, instance_model)
+        instance_view.set_model_and_view(instance_view, instance_model)
+        instance_model.set_model_and_view(instance_view, instance_model)
+
+        return cls._instances[key]

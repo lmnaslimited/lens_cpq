@@ -12,15 +12,11 @@ def start_condition():
     # controller.execute()
 
     # call controller
-    controller = ViewModelFactory.get_controller("controller", Controller,"Quotation", "on_update", ["on_change"])
     # call view
-    view = ViewModelFactory.get_controller("view_controller", ClViewController,"Quotation", "on_update", ["on_change"])
     # call model
-    model = ViewModelFactory.get_controller("model_controller", ClModelController,"Quotation", "on_update", ["on_change"])
-
     # in controller set model and view (have a private / public method)
-    controller.set_model_and_view(view, model)
     # in view set model and view
-    view.set_model_and_view(view, model)
-    model.set_model_and_view(view, model)
+    controller = ViewModelFactory.get_controller("controller", Controller,"Quotation", "on_update", ["on_change"])
+    controller.execute()
+    
     print("################## End Test ###############################")
