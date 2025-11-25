@@ -190,7 +190,7 @@ def get_children(doctype=None, parent=None, **kwargs):
         order_by="idx"
     )
 
-    print("get all", la_config_items)
+    # print("get all", la_config_items)
 
     return la_config_items
 
