@@ -6,7 +6,7 @@ from frappe.model.document import Document
 from frappe.exceptions import DuplicateEntryError
 
 class Design(Document):
-	
+
 	"""
 		Method runs during creation and when `is_template` is enabled,
 		it replaces the default system-generated name with `template_name`.
@@ -27,8 +27,7 @@ class Design(Document):
 					)
 
 			except DuplicateEntryError:
-				frappe.msgprint("A duplicate entry was found. Skipping.")
-				return
+				raise
 
 			# Set the document name
 			self.name = self.template_name
