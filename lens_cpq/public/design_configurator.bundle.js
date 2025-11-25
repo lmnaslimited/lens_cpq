@@ -60,8 +60,8 @@ class DesignConfigurator {
 		let main_div = $(this.page)[0];
 
 		main_div.style.marginBottom = "15px";
-		$(main_div).find(".tree-children")[0].style.minHeight = "370px";
-		$(main_div).find(".tree-children")[0].style.maxHeight = "370px";
+		$(main_div).find(".tree-children")[0].style.minHeight = "auto";
+		$(main_div).find(".tree-children")[0].style.maxHeight = "auto";
 		$(main_div).find(".tree-children")[0].style.overflowY = "auto";
 	}
 	load_tree(response, node) {
