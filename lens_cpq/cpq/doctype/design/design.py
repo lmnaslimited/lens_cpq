@@ -13,7 +13,6 @@ class Design(Document):
         Raises: frappe.ValidationError: If a Design record already exists with the 
         same Template Name.
     """
-
 	def autoname(self):
 		if self.is_template and self.template_name:
 			# Check for duplicate design document name
@@ -22,3 +21,8 @@ class Design(Document):
 
 			# Set the document name
 			self.name = self.template_name
+
+	def validate(self):
+		# Ensure that template_name is set if is_template is True
+		if self.is_template and not self.template_name:
+			frappe.throw("Enter Template Name")
