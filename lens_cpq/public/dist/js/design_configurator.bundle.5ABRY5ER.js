@@ -73,21 +73,19 @@
     }
     tree_methods() {
       let frm_obj = this;
+      let view = frappe.views.trees["Design Configurator"];
       return {
         onload: function(me) {
           me.args["parent_id"] = frm_obj.frm.doc.name;
           me.args["plant_floor"] = frm_obj.frm.doc.template_name;
+          me.root_value = frm_obj.frm.doc.plant_floor;
           me.parent = frm_obj.$wrapper.get(0);
           me.body = frm_obj.$wrapper.get(0);
           me.make_tree();
-        },
-        on_node_click: function(node) {
-          frappe.msgprint(`Opening form for node: ${node.value}`);
-          frappe.set_route("Form", "Design Configurator", node.value);
         }
       };
     }
   };
   frappe.ui.DesignConfigurator = DesignConfigurator;
 })();
-//# sourceMappingURL=design_configurator.bundle.F4FHIT5N.js.map
+//# sourceMappingURL=design_configurator.bundle.5ABRY5ER.js.map

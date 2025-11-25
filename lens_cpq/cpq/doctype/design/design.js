@@ -4,7 +4,7 @@ let ldFieldFilteredOptions = {};
 frappe.ui.form.on('Design', {
     refresh(frm) {
 
-        // if (!frappe.design_configurator || frappe.design_configurator.design_configurator !== frm.doc.name) {
+        // Build the design tree if a template name is set
         if(frm.doc.template_name){
             frm.trigger("build_tree");
         }
@@ -80,11 +80,12 @@ frappe.ui.form.on('Design', {
         }
     },
 
+    // Build and display the design tree in the "design_tree" field
     build_tree(frm) {
         let $parent = $(frm.fields_dict["design_tree"].wrapper);
         $parent.empty();
-        // frm.toggle_enable("item_code", false);
-
+        
+        // Load the Design Configurator JS bundle and initialize the design tree for the form
         frappe.require("design_configurator.bundle.js").then(() => {
             frappe.design_configurator = new frappe.ui.DesignConfigurator({
                 wrapper: $parent,

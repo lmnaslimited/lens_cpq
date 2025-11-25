@@ -1,3 +1,12 @@
+// constructor: Initialize the design tree, layout, and events
+// make: Build and display the tree structure with root and children
+// bind_events: Attach tree events for editing and loading
+// tree_options: Define tree configuration and behavior
+// prepare_layout: Set tree container layout and scrolling
+// load_tree: Load child nodes for a given tree node
+// tree_methods: Define behavior when the tree loads
+// frappe.ui.DesignConfigurator: Expose the class globally for use in forms
+
 class DesignConfigurator {
 	constructor({ wrapper, page, frm, design_configurator }) {
 		this.$wrapper = $(wrapper);
@@ -36,7 +45,6 @@ class DesignConfigurator {
 			expandable: true,
 			title: __("Design Configurator"),
 			breadcrumb: "Manufacturing",
-			// root_label: __("Design Configurator"),
 			get_tree_nodes: "lens_cpq.cpq.doctype.design.api.get_children",
 			root_label: this.frm.doc.template_name,
 			disable_add_node: true,
@@ -45,6 +53,7 @@ class DesignConfigurator {
 			extend_toolbar: false,
 			do_not_make_page: true,
 			do_not_setup_menu: true,
+			
 		};
 	}
     prepare_layout() {
@@ -60,23 +69,17 @@ class DesignConfigurator {
 	}
 	tree_methods() {
 		let frm_obj = this;
-		
+		let view = frappe.views.trees["Design Configurator"]
 		return {
 			onload: function (me) {
 				me.args["parent_id"] = frm_obj.frm.doc.name; 
 				me.args["plant_floor"] = frm_obj.frm.doc.template_name;
-				
+				me.root_value = frm_obj.frm.doc.plant_floor;
+
 				me.parent = frm_obj.$wrapper.get(0);
 				me.body = frm_obj.$wrapper.get(0);
 				me.make_tree();
 			},
-			on_node_click: function(node) {
-				// node.value contains the node's id/name
-				frappe.msgprint(`Opening form for node: ${node.value}`);
-
-				// Open the form of the selected node
-				frappe.set_route('Form', 'Design Configurator', node.value);
-			}
 		}
 	}
 }
