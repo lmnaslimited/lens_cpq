@@ -6,18 +6,20 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "tree_tab",
   "naming_series",
   "is_template",
-  "column_break_vvrr",
+  "column_break_jzjf",
   "template_name",
   "design_template",
   "plant_floor",
+  "section_break_suhp",
+  "design_tree",
+  "design_configurator",
+  "details_tab",
   "section_break_iuqk",
   "dynamic_fields",
   "design_attributes",
-  "design_configurator",
-  "tree_tab",
-  "design_tree",
   "item_tab",
   "item"
  ],
@@ -48,10 +50,6 @@
    "hidden": 1,
    "label": "Series",
    "options": "{design_template.-.###}"
-  },
-  {
-   "fieldname": "column_break_vvrr",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "item",
@@ -101,12 +99,25 @@
    "fieldname": "plant_floor",
    "fieldtype": "Data",
    "label": "Plant Floor"
+  },
+  {
+   "fieldname": "column_break_jzjf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_suhp",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Details"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-11-14 14:08:07.685698",
+ "modified": "2025-11-26 13:25:45.577369",
  "modified_by": "Administrator",
  "module": "CPQ",
  "name": "Design",

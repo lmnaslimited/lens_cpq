@@ -2,6 +2,7 @@
 # For license information, please see license.txt
 
 import frappe
+from frappe import _
 from frappe.model.document import Document
 from frappe.exceptions import DuplicateEntryError
 
@@ -18,21 +19,23 @@ class Design(Document):
 	def autoname(self):
 		if self.is_template and self.template_name:
 
-			try:
-				# Check for duplicate based on docname
-				if frappe.db.exists("Design", self.template_name):
-					frappe.throw(
-						f"Design Template '{self.template_name}' already exists.",
-						DuplicateEntryError
-					)
+			# Check for duplicate based on docname
+			if frappe.db.exists("Design", self.template_name):
+				frappe.throw(
+					_("Design Template '{0}' already exists.").format(self.template_name),
+					DuplicateEntryError
+				)
 
-			except DuplicateEntryError:
-				raise
-
-			# Set the document name
+			# Set the document name as the template name
 			self.name = self.template_name
 
 	def validate(self):
-		# Ensure that template_name is set if is_template is True
+		"""
+		Method ensures that when a Design is marked as a template (`is_template = 1`),
+		a corresponding `template_name` must be provided. 
+
+		Raises:
+			frappe.ValidationError: If `is_template` is checked but no Template Name is entered.
+		"""
 		if self.is_template and not self.template_name:
-			frappe.throw("Enter Template Name")
+			frappe.throw(_("Please enter a Template Name."))
