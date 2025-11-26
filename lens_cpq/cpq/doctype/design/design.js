@@ -8,8 +8,7 @@ frappe.ui.form.on('Design', {
         if(frm.doc.template_name){
             frm.trigger("build_tree");
         }
-        
-
+         
         if (frm.doc.design_template) {
 
             frm.events.fnFetchAndRenderTemplateFields(frm);

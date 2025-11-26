@@ -18,15 +18,15 @@ class DesignConfigurator {
 		this.bind_events();
 	}
 	make() {
-		let options = {
+		let ld_options = {
 			...this.tree_options(),
 			...this.tree_methods(),
 		};
 
-		frappe.views.trees["Design Configurator"] = new frappe.views.TreeView(options);
-		let node = frappe.views.trees["Design Configurator"].tree.root_node;
-		frappe.views.trees["Design Configurator"].tree.show_toolbar(node);
-		frappe.views.trees["Design Configurator"].tree.load_children(node, true);
+		frappe.views.trees["Design Configurator"] = new frappe.views.TreeView(ld_options);
+		let l_node = frappe.views.trees["Design Configurator"].tree.root_node;
+		frappe.views.trees["Design Configurator"].tree.show_toolbar(l_node);
+		frappe.views.trees["Design Configurator"].tree.load_children(l_node, true);
 		this.tree_view = frappe.views.trees["Design Configurator"];
 	}
     bind_events() {
@@ -57,27 +57,27 @@ class DesignConfigurator {
 		};
 	}
     prepare_layout() {
-		let main_div = $(this.page)[0];
+		let l_main_div = $(this.page)[0];
 
-		main_div.style.marginBottom = "15px";
-		$(main_div).find(".tree-children")[0].style.minHeight = "auto";
-		$(main_div).find(".tree-children")[0].style.maxHeight = "auto";
-		$(main_div).find(".tree-children")[0].style.overflowY = "auto";
+		l_main_div.style.marginBottom = "15px";
+		$(l_main_div).find(".tree-children")[0].style.minHeight = "auto";
+		$(l_main_div).find(".tree-children")[0].style.maxHeight = "auto";
+		$(l_main_div).find(".tree-children")[0].style.overflowY = "auto";
 	}
 	load_tree(response, node) {
 		frappe.views.trees["Design Configurator"].tree.load_children(node);
 	}
 	tree_methods() {
-		let frm_obj = this;
-		let view = frappe.views.trees["Design Configurator"]
+		let l_frm_obj = this;
+		let l_view = frappe.views.trees["Design Configurator"]
 		return {
 			onload: function (me) {
-				me.args["parent_id"] = frm_obj.frm.doc.name; 
-				me.args["plant_floor"] = frm_obj.frm.doc.template_name;
-				me.root_value = frm_obj.frm.doc.plant_floor;
+				me.args["parent_id"] = l_frm_obj.frm.doc.name; 
+				me.args["plant_floor"] = l_frm_obj.frm.doc.template_name;
+				me.root_value = l_frm_obj.frm.doc.plant_floor;
 
-				me.parent = frm_obj.$wrapper.get(0);
-				me.body = frm_obj.$wrapper.get(0);
+				me.parent = l_frm_obj.$wrapper.get(0);
+				me.body = l_frm_obj.$wrapper.get(0);
 				me.make_tree();
 			},
 		}
