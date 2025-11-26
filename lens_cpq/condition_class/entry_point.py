@@ -6,17 +6,7 @@ from lens_cpq.condition_class.controller import ClViewController, Controller, Vi
 @frappe.whitelist()
 def start_condition():
     print("################## Starting Condition Controller Test #####################")
-    # # the controller is the start
-    # controller = Controller("Quotation", "on_update", ["on_change"])
-    # # controller.init_controller()
-    # controller.execute()
-
-    # call controller
-    # call view
-    # call model
-    # in controller set model and view (have a private / public method)
-    # in view set model and view
-    controller = ViewModelFactory.get_controller("controller", Controller,"Quotation", "on_update", ["on_change"])
+    controller = ViewModelFactory.get_controller("controller", Controller,"Quotation", "on_change", "status")
     controller.execute()
     
     print("################## End Test ###############################")

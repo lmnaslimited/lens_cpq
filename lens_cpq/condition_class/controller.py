@@ -1,8 +1,6 @@
+from lens_cpq.condition_class.condition import ClCondtions
 from lens_cpq.condition_class.interface import Ifcontroller
-from typing import List, Union
-# from abc import abstractmethod
-# from lens_cpq.condition_class.view_controller import ClViewController
-# from lens_cpq.condition_class.model_controller import ClModelController
+from typing import List, Union, Dict
 from lens_cpq.condition_class.interface import IfCondtions
 
 class Controller(Ifcontroller):
@@ -11,69 +9,40 @@ class Controller(Ifcontroller):
     model_controller: Ifcontroller
     doctype: str
     event: str
-    event_fields: Union[list, str]
+    fields: Union[list, str]
 
-    # this controller class start a circular dependencey becuase
-    # this call view and model here and in view class it call controller again and same goes for model
-    #
-    # Failed to get method for command lens_cpq.condition_class.entry_point.start_condition with cannot 
-    # import name 'Controller' from partially initialized module 'lens_cpq.condition_class.controller' 
-    # (most likely due to a circular import) (/workspace/frappe-bench/apps/lens_cpq/lens_cpq/condition_class/controller.py)
-
-    #  so i put the import on constructor
-    def __init__(self, doctype: str, event: str, events: Union[list, str]):
-        # commented on Day 2 review
-        # from lens_cpq.condition_class.view_controller import ClViewController
-        # from lens_cpq.condition_class.model_controller import ClModelController
+    def __init__(self, doctype: str, event: str, fields: Union[list, str]):
         self.doctype = doctype
         self.event = event
-        self.event_fields = events
-        # commented on Day 2 review
-        # self.view_controller =  ViewModelFactory.get_controller("view_controller", ClViewController,doctype, event, events)
-        # self.model_controller =  ViewModelFactory.get_controller("model_controller", ClModelController,doctype, event, events)
-        # self.view_controller = ClViewController(doctype, event, events)
-        # self.model_controller = ClModelController(doctype, event, events)
-
+        self.fields = fields
+    
     def set_model_and_view(self, view_instance, model_instance):
         self.view_controller = view_instance
         self.model_controller = model_instance
 
-    # @abstractmethod
-    # TypeError: Can't instantiate abstract class Controller with abstract method execute
-    # Possible source of error: lens_cpq (app)
-
-# second review (day 2)
-# put public method, --> init two controller, 
-    # def init_controller(self):
-    #     from lens_cpq.condition_class.view_controller import ClViewController
-    #     from lens_cpq.condition_class.model_controller import ClModelController
-
-    #     self.view_controller =  ClViewController(self.doctype, self.event, self.event_fields)
-    #     self.model_controller = ClModelController(self.doctype, self.event, self.event_fields)
 
     def execute(self):
-        print(f"[Controller] State changed detected, checking is state change for,  : {self.doctype}")
-        if self.view_controller.is_sate_changed():
-            print("[Controller] State changed detected, calling ModelController")
-            self.model_controller.execute()
-        else:
-            print("[Controller] No state change, skipping ModelController")
+        print(f"[Controller] Field changed: {self.fields}")
+        condition = ClCondtions(self.doctype, self.event, self.fields)
+        condition.attach_model(self.view_controller,self.model_controller) #to avoid round import we injecting the model
+
+        affected_conditions = condition.resolve_condition_chain(
+            self.fields, self.event
+        )
+
+        condition.execute_conditions(affected_conditions)
 
     
 class ClViewController(Controller):
 
-    # commented out on review 2
+   
     def __init__(self, doctype, event, events):
         super().__init__(doctype, event, events) 
-        # calling the super creating a circular dependency
-        # self.doctype = doctype
-        # self.event = event
-        # self.events = events
-    
-    # this function is for checking if field was changed by user or condition type 
-    # (final / need to trigger another condition sequence)
+        
     def is_sate_changed(self)->bool:
-        print(f"[ViewController] Checking if state changed...: {self.doctype}")
+        return True
+    
+    def is_value_present_in_doc(self, input_field_names:List)->bool:
         return True
 
     def execute(self):
@@ -82,19 +51,14 @@ class ClViewController(Controller):
     def set_model_and_view(self, view_instance, model_instance):
         self.view_controller = view_instance
         self.model_controller = model_instance
-        self.test_model = ViewModelFactory.get_controller("model_controller", ClModelController,self.doctype, self.event, self.event_fields)
-
+        
 
 class ClModelController(Controller):
     conditions: List[IfCondtions]
     
     def __init__(self, doctype, event, events):
         super().__init__(doctype, event, events)
-        # calling the super creating a circular dependency
-        # self.doctype = doctype
-        # self.event = event
-        # self.events = events
-    
+        
     def execute(self):
         print("[ModelController] Executing model logic...")
     
@@ -102,34 +66,55 @@ class ClModelController(Controller):
         self.view_controller = view_instance
         self.model_controller = model_instance
 
-
-        # # 
-        # # dummy record to simulate the condition value's input value
-        # records = [
-        #     {"field_evalutionType": "constant"},
-        #     {"field_evalutionType": "api"},
-        #     {"field_evalutionType": "formula"},
-        # ]
-
-        # for record in records:
-        #     condition = InputFieldConditionFactory.create("Quotation", "discount", 10, record)
-        #     print(f"[ModelController] Created condition of type: {record['field_evalutionType']}")
-        #     condition.evaluate()
-        # #
+    # STEP 1: Fetch INPUT SEQUENCE records
+    def fetch_input_sequence(self, field_name: str) -> List[Dict]:
+        print(f"[Model] Fetching Input Sequence for: {field_name}")
+        if field_name == "x_output":
+            return [
+                {"name": "INP-0002", "field_name": "2_input", "parent": "COND-0002"},
+            ]
+        return [
+            {"name": "INP-0001", "field_name": field_name, "parent": "COND-0001"},
+        ]
+    
+    # STEP 2: Fetch OUTPUT SEQUENCE from parent
+    def fetch_output_sequence(self, parent_name: str) -> List[Dict]:
+        print(f"[Model] Fetching Output Sequence for parent: {parent_name}")
+        if parent_name == "COND-0002":
+            return [
+                {"name": "OUT-0002", "field_name": "x_2_output", "parent": parent_name},
+            ]
+        return [
+            {"name": "OUT-0001", "field_name": "x_output", "parent": parent_name},
+        ]
+    
+    # STEP 5: Fetch CONDITION TYPE HEADER
+    def fetch_condition_type(self, parent_names: List[str]) -> List[Dict]:
+        print(f"[Model] Fetching Condition Type for parents: {parent_names}")
+        
+        headers = []
+        
+        if "COND-0001" in parent_names:
+            headers.append({
+                "name": "COND-0001",
+                "type": "constant",
+                "priority": 1,
+                "depends_on": "COND-0002"
+            })
+        
+        if "COND-0002" in parent_names:
+            headers.append({
+                "name": "COND-0002",
+                "type": "constant",
+                "priority": 2
+            })
+        
+        return headers
 
 
 class ViewModelFactory:
-    # found the cause why the view controller keep on instantiating 
-    # without retaining
-    # because on first call of this factory the _instance is {}
-    # it call the veiwController but view controller doesn't
-    # has a constructor (__init__), so python but default calls its super
-    # since it implement controller, calls, it call its __init__
-    # and there it will call the factory again, eventhough the factory is not reinstantiated because we never called 
-    # ViewModelFactory(), but only its class method ViewModelFactory.get_controller()
-    # the _instance was never set because the view controller was never instantiated
-    # that why this made a endless loop
     _instances = {}
+
     @classmethod
     def get_controller(cls, key, clazz, doctype, event, event_fields):
         """Returns existing instance if available, else creates new one."""
@@ -139,13 +124,8 @@ class ViewModelFactory:
             result = cls._instances[key]
             return result
 
-        # Instantiate a new controller
-        # instance = clazz(doctype, event, event_fields)
         instance = cls.instantiate_controller(cls, key, doctype, event, event_fields)
-
-        # Store it for reuse
-        # cls._instances[key] = instance
-        
+    
         return instance
     
 
