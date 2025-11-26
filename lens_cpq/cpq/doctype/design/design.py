@@ -8,7 +8,6 @@ from frappe.exceptions import DuplicateEntryError
 
 class Design(Document):
 
-
 	def autoname(self):
 	"""
 		Method runs during creation and when `is_template` is enabled,
