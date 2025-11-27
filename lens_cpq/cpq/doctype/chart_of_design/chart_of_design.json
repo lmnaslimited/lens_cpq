@@ -7,9 +7,9 @@
  "field_order": [
   "section_break_ruju",
   "lft",
+  "old_parent",
   "is_group",
   "parent_chart_of_design",
-  "old_parent",
   "default_value",
   "column_break_awty",
   "rgt",
@@ -52,12 +52,6 @@
    "fieldtype": "Check",
    "label": "Is Group",
    "read_only": 1
-  },
-  {
-   "fieldname": "old_parent",
-   "fieldtype": "Link",
-   "label": "Old Parent",
-   "options": "Chart of Design"
   },
   {
    "fieldname": "parent_chart_of_design",
@@ -138,13 +132,19 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "Default Value"
+  },
+  {
+   "fieldname": "old_parent",
+   "fieldtype": "Link",
+   "label": "Old Parent",
+   "options": "Chart of Design"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2025-09-16 10:58:37.266204",
+ "modified": "2025-11-25 14:53:47.177371",
  "modified_by": "Administrator",
  "module": "CPQ",
  "name": "Chart of Design",

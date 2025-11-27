@@ -6,9 +6,17 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "tree_tab",
   "naming_series",
+  "is_template",
+  "column_break_jzjf",
+  "template_name",
   "design_template",
-  "column_break_vvrr",
+  "plant_floor",
+  "section_break_suhp",
+  "design_tree",
+  "design_configurator",
+  "details_tab",
   "section_break_iuqk",
   "dynamic_fields",
   "design_attributes",
@@ -17,6 +25,7 @@
  ],
  "fields": [
   {
+   "depends_on": "eval:!doc.is_template",
    "fieldname": "design_template",
    "fieldtype": "Link",
    "label": "Design Template",
@@ -43,10 +52,6 @@
    "options": "{design_template.-.###}"
   },
   {
-   "fieldname": "column_break_vvrr",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "item",
    "fieldtype": "Link",
    "label": "Item",
@@ -60,13 +65,60 @@
    "fieldname": "item_tab",
    "fieldtype": "Tab Break",
    "label": "Item"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_template",
+   "fieldtype": "Check",
+   "label": "Is Template"
+  },
+  {
+   "fieldname": "tree_tab",
+   "fieldtype": "Tab Break",
+   "label": "Tree"
+  },
+  {
+   "fieldname": "design_tree",
+   "fieldtype": "HTML",
+   "label": "Design In Tree View"
+  },
+  {
+   "depends_on": "eval:doc.is_template",
+   "fieldname": "template_name",
+   "fieldtype": "Data",
+   "label": "Template Name"
+  },
+  {
+   "fieldname": "design_configurator",
+   "fieldtype": "Table",
+   "label": "Design Configurator",
+   "options": "Design Configurator"
+  },
+  {
+   "depends_on": "eval: doc.is_template",
+   "fieldname": "plant_floor",
+   "fieldtype": "Data",
+   "label": "Plant Floor"
+  },
+  {
+   "fieldname": "column_break_jzjf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_suhp",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Details"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-04 15:40:06.830738",
- "modified_by": "test@lmnas.com",
+ "modified": "2025-11-26 13:25:45.577369",
+ "modified_by": "Administrator",
  "module": "CPQ",
  "name": "Design",
  "naming_rule": "By \"Naming Series\" field",

@@ -120,6 +120,75 @@ frappe.treeview_settings["Chart of Design"] = {
     onload: function (ldTreeview) {
         frappe.treeview_settings["Chart of Design"].treeview = ldTreeview;
 
+        // Add inner button labeled "Design Template" inside the "Create" group in the page header
+        ldTreeview.page.add_inner_button(
+            __("Design Template"),
+            function () {
+
+                // Retrieve selected Plant Floor from page filter
+                const LPlantFloor = ldTreeview.page.fields_dict.plant_floor.get_value();
+
+                // Enforce Plant Floor selection before template creation
+                if (!LPlantFloor) {
+                    frappe.throw(__("Please select Plant Floor before creating Design Template"));
+                }
+
+                let laDesignConfigurators = [];
+
+                // Invoke server API to fetch hierarchical Chart of Design data
+                frappe.call({
+                    method: "frappe.desk.treeview.get_all_nodes",
+                    args: {
+                        doctype: "Chart of Design",
+                        label: LPlantFloor,
+                        parent: LPlantFloor,
+                        tree_method: "lens_cpq.cpq.doctype.chart_of_design.api.fn_get_children",
+                        is_root: true,
+                        plant_floor: LPlantFloor,
+                    },
+
+                    callback: function (ldResponse) {
+                        if (ldResponse.message) {
+
+                            let laChartNodes = ldResponse.message;
+
+                            // Prepare design_configurators child table data
+                            laChartNodes.forEach((ldNode) => {
+                                let lParent = ldNode.parent;
+                                let laChildData = ldNode.data;
+
+                                laChildData.forEach(ldAttr => {
+                                    laDesignConfigurators.push({
+                                        parent_node: lParent,
+                                        label: ldAttr.label,
+                                        is_group: ldAttr.expandable,
+                                        attribute: ldAttr.attribute,
+                                        from_range: ldAttr.from_range,
+                                        to_range: ldAttr.to_range,
+                                        increment: ldAttr.increment,
+                                        default_value: ldAttr.default_value,
+                                        options: JSON.stringify(ldAttr.attribute_value),
+                                    });
+                                });
+                            });
+
+                            // Set default values for new Design document (Template)
+                            frappe.route_options = {
+                                is_template: true,
+                                plant_floor: LPlantFloor,
+                                design_configurator: laDesignConfigurators,
+                            };
+
+                            // Trigger creation of new Design document (Template)
+                            frappe.new_doc("Design");
+                        }
+                    }
+                });
+            },
+            __("Create")
+        );
+
+
         /*
        * Purpose - Show a dialog to create a new node in the Chart of Design tree.
        * @iParentNode {Object} - Node under which the new node is added.

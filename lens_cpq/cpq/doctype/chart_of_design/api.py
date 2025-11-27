@@ -1,10 +1,23 @@
 import frappe
 from frappe.utils import cint
 
+"""
+Return hierarchical nodes for a given DocType to support tree-based UI rendering.
+
+This function retrieves child nodes based on the specified parent and root-level
+configuration. It also merges attribute metadata (value, abbr, exclude) into a
+grouped node structure that aligns with Frappe's TreeView requirements.
+
+Args:
+     doctype (str): The DocType to fetch nodes from.
+     parent (str): Parent node identifier.
+     is_root (bool): Indicates whether root-level nodes should be fetched.
+     plant_floor (str): Selected Plant Floor.
+
+Returns:
+     list[dict]: List of consolidated node dictionaries formatted for TreeView.
+"""
 @frappe.whitelist()
-# Whitelist this function to make it accessible via Frappe client calls (e.g., from JS)
-# Function to get hierarchical children nodes for a given Doctype, optionally filtered by plant_floor or root
-# Incoming variable on runtime by framework
 def fn_get_children(doctype, parent=None, is_root=False, plant_floor=None, **kwargs):
     
     # Determine the parent field name dynamically (e.g., parent_machine_node)
@@ -13,12 +26,17 @@ def fn_get_children(doctype, parent=None, is_root=False, plant_floor=None, **kwa
     # Fields to return
     la_fields = [
         "name as value",
-        "attribute",
-        "abbr",
         "is_group as expandable",
+        "root_abbr",
         l_parent_fieldname,
-        "lft",
-        "rgt"
+        "attribute",
+        "from_range",
+        "to_range",
+        "increment",
+        "default_value",
+        "`tabCPQ Item Attribute Value`.attribute_value",
+        "`tabCPQ Item Attribute Value`.abbr",
+        "`tabCPQ Item Attribute Value`.exclude",
     ]
 
     # Filters
@@ -33,15 +51,42 @@ def fn_get_children(doctype, parent=None, is_root=False, plant_floor=None, **kwa
     else:
         # Children: filter by parent node
         la_filters.append([l_parent_fieldname, "=", parent])
-
+    
     # Fetch the list of child nodes with the specified filters
-    la_nodes = frappe.get_list(doctype, fields=la_fields, filters=la_filters)
-     # Construct label
-    for ld_node in la_nodes:
-        ld_node["label"] = f"{ld_node.attribute} - {ld_node.abbr}" if ld_node.get("abbr") else ld_node.attribute
+    la_nodes = frappe.get_all(doctype, fields=la_fields, filters=la_filters)
 
-    # Return the list of nodes to the client
-    return la_nodes
+    ld_grouped_nodes = {}
+
+    # Iterate through the fetched node records and consolidate attribute values
+    for ld_row in la_nodes:
+        # Unique identifier for grouping
+        l_key = ld_row["value"]  
+
+        #  If node is seen for the first time:  initialize its consolidated structure
+        if l_key not in ld_grouped_nodes:
+            ld_node = ld_row.copy()
+
+            # Container for aggregated attribute-values
+            ld_node["attribute_value"] = []  
+            
+            # Construct label using attribute and abbreviation
+            ld_node["label"] = f"{ld_row['attribute']} - {ld_row['root_abbr']}" if ld_row.get("root_abbr") else ld_row["attribute"]
+
+            # Remove first copy of child table fields
+            ld_node.pop("abbr", None)
+            ld_node.pop("exclude", None)
+
+            ld_grouped_nodes[l_key] = ld_node
+
+        #   Insert each attribute-value pair into the node’s grouped list
+        if ld_row.get("attribute_value"):
+            ld_grouped_nodes[l_key]["attribute_value"].append({
+                "attribute_value": ld_row["attribute_value"],
+                "abbr": ld_row["abbr"],
+                "exclude": ld_row["exclude"]
+            })
+
+    return list(ld_grouped_nodes.values())
 
 """
     Purpose: Adds a new node to the 'Chart of Design' tree structure..
