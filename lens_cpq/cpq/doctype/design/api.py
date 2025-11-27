@@ -189,7 +189,6 @@ def get_children(doctype=None, parent=None, **kwargs):
         "is_group as expandable",
         "parent_node as parent_id",
         "attribute",
-        "name",
         "'Design Configurator' as doctype",
         "from_range",
         "to_range",

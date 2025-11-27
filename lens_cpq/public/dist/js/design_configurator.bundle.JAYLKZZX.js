@@ -30,9 +30,9 @@
     make() {
       let ld_options = __spreadValues(__spreadValues({}, this.tree_options()), this.tree_methods());
       frappe.views.trees["Design Configurator"] = new frappe.views.TreeView(ld_options);
-      let l_node = frappe.views.trees["Design Configurator"].tree.root_node;
-      frappe.views.trees["Design Configurator"].tree.show_toolbar(l_node);
-      frappe.views.trees["Design Configurator"].tree.load_children(l_node, true);
+      let ld_node = frappe.views.trees["Design Configurator"].tree.root_node;
+      frappe.views.trees["Design Configurator"].tree.show_toolbar(ld_node);
+      frappe.views.trees["Design Configurator"].tree.load_children(ld_node, true);
       this.tree_view = frappe.views.trees["Design Configurator"];
     }
     bind_events() {
@@ -62,25 +62,25 @@
       };
     }
     prepare_layout() {
-      let l_main_div = $(this.page)[0];
-      l_main_div.style.marginBottom = "15px";
-      $(l_main_div).find(".tree-children")[0].style.minHeight = "auto";
-      $(l_main_div).find(".tree-children")[0].style.maxHeight = "auto";
-      $(l_main_div).find(".tree-children")[0].style.overflowY = "auto";
+      let ld_main_div = $(this.page)[0];
+      ld_main_div.style.marginBottom = "15px";
+      $(ld_main_div).find(".tree-children")[0].style.minHeight = "auto";
+      $(ld_main_div).find(".tree-children")[0].style.maxHeight = "auto";
+      $(ld_main_div).find(".tree-children")[0].style.overflowY = "auto";
     }
     load_tree(response, node) {
       frappe.views.trees["Design Configurator"].tree.load_children(node);
     }
     tree_methods() {
-      let l_frm_obj = this;
-      let l_view = frappe.views.trees["Design Configurator"];
+      let ld_frm_obj = this;
+      let ld_view = frappe.views.trees["Design Configurator"];
       return {
         onload: function(me) {
-          me.args["parent_id"] = l_frm_obj.frm.doc.name;
-          me.args["plant_floor"] = l_frm_obj.frm.doc.template_name;
-          me.root_value = l_frm_obj.frm.doc.plant_floor;
-          me.parent = l_frm_obj.$wrapper.get(0);
-          me.body = l_frm_obj.$wrapper.get(0);
+          me.args["parent_id"] = ld_frm_obj.frm.doc.name;
+          me.args["plant_floor"] = ld_frm_obj.frm.doc.template_name;
+          me.root_value = ld_frm_obj.frm.doc.plant_floor;
+          me.parent = ld_frm_obj.$wrapper.get(0);
+          me.body = ld_frm_obj.$wrapper.get(0);
           me.make_tree();
         }
       };
@@ -88,4 +88,4 @@
   };
   frappe.ui.DesignConfigurator = DesignConfigurator;
 })();
-//# sourceMappingURL=design_configurator.bundle.LFFYQ6BC.js.map
+//# sourceMappingURL=design_configurator.bundle.JAYLKZZX.js.map
