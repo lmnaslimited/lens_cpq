@@ -157,3 +157,60 @@ def fn_create_item_from_design(design_name):
     # ld_item_price.price_list_rate = ld_design_doc.total_cost
     # ld_item_price.insert()
     return ld_item_variant.item_code
+
+@frappe.whitelist()
+def get_children(doctype=None, parent=None, **kwargs):
+
+    """
+    Retrieve child nodes from the "Design Configurator".
+
+    Fetches all child items under a specified parent node. 
+    Each child includes attributes, range values, options, and metadata 
+    required to display or process the configuration tree.
+
+    Parameters:
+        doctype (str, optional): Doctype to fetch children from (currently unused).
+        parent (str, optional): Parent node identifier.
+        kwargs (dict): Additional inputs, expects 'parent_id' key for filtering.
+
+    Returns:
+        list[dict]: Child nodes with fields such as value, expandable, parent_id, attribute, 
+                    ranges, default_value, and options.
+    """
+    # If kwargs is a JSON string, convert it to a dictionary
+    if isinstance(kwargs, str):
+        kwargs = frappe.parse_json(kwargs)
+
+    if isinstance(kwargs, dict):
+        kwargs = frappe._dict(kwargs)
+    
+    la_fields = [
+        "label as value",
+        "is_group as expandable",
+        "parent_node as parent_id",
+        "attribute",
+        "'Design Configurator' as doctype",
+        "from_range",
+        "to_range",
+        "increment",
+        "default_value",
+        "options",
+    ]
+
+    # 'parent': identifies the immediate parent record of the child node
+    # 'parent_node': identifies the parent node in the tree structure
+    ld_query_filters = {
+        "parent": kwargs.parent_id,
+        "parent_node": parent
+    }
+    
+    # Get the child table "Design Configurator" data
+    la_config_items = frappe.get_all(
+        "Design Configurator",
+        fields=la_fields,
+        filters=ld_query_filters,
+        order_by="idx"
+    )
+    
+    return la_config_items
+

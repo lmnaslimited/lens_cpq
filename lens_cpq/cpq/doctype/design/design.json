@@ -6,7 +6,7 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "tree_tab",
+  "details_tab",
   "naming_series",
   "is_template",
   "column_break_jzjf",
@@ -18,6 +18,9 @@
   "design_configurator",
   "details_tab",
   "section_break_iuqk",
+  "design_tree",
+  "design_configurator",
+  "section_break_k1hb",
   "dynamic_fields",
   "design_attributes",
   "item_tab",
@@ -25,7 +28,7 @@
  ],
  "fields": [
   {
-   "depends_on": "eval:!doc.is_template",
+   "depends_on": "eval: !doc.is_template",
    "fieldname": "design_template",
    "fieldtype": "Link",
    "label": "Design Template",
@@ -73,11 +76,6 @@
    "label": "Is Template"
   },
   {
-   "fieldname": "tree_tab",
-   "fieldtype": "Tab Break",
-   "label": "Tree"
-  },
-  {
    "fieldname": "design_tree",
    "fieldtype": "HTML",
    "label": "Design In Tree View"
@@ -91,6 +89,7 @@
   {
    "fieldname": "design_configurator",
    "fieldtype": "Table",
+   "hidden": 1,
    "label": "Design Configurator",
    "options": "Design Configurator"
   },
@@ -101,23 +100,19 @@
    "label": "Plant Floor"
   },
   {
-   "fieldname": "column_break_jzjf",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "section_break_suhp",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "details_tab",
    "fieldtype": "Tab Break",
    "label": "Details"
+  },
+  {
+   "fieldname": "section_break_k1hb",
+   "fieldtype": "Section Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-11-26 13:25:45.577369",
+ "modified": "2025-11-25 17:36:21.193522",
  "modified_by": "Administrator",
  "module": "CPQ",
  "name": "Design",
