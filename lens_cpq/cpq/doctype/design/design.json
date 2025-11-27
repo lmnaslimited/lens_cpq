@@ -9,10 +9,14 @@
   "details_tab",
   "naming_series",
   "is_template",
-  "column_break_vvrr",
+  "column_break_jzjf",
   "template_name",
   "design_template",
   "plant_floor",
+  "section_break_suhp",
+  "design_tree",
+  "design_configurator",
+  "details_tab",
   "section_break_iuqk",
   "design_tree",
   "design_configurator",
@@ -49,10 +53,6 @@
    "hidden": 1,
    "label": "Series",
    "options": "{design_template.-.###}"
-  },
-  {
-   "fieldname": "column_break_vvrr",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "item",
