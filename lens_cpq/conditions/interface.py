@@ -2,19 +2,19 @@ from abc import ABC, abstractmethod
 from typing import List, Any, Literal
 
 # controller interface
-class Ifcontroller(ABC):
+class if_controller(ABC):
     @abstractmethod
     def execute(self):
         pass
 
 #fieldcondition interface
 # child table instance
-class Iffieldcondtions(ABC):
-    type: Literal["api", "formula", "constant", "condition"]
-    doctype: str
-    field_name: str
-    input_value: Any
-    condtion_field_record: dict
+class if_field_condtions(ABC):
+    l_type: Literal["api", "formula", "constant", "condition"]
+    l_doctype: str
+    l_field_name: str
+    l_input_value: Any
+    ld_condtion_field_record: dict
 
     @abstractmethod
     def evaluate(self) -> bool:
@@ -22,14 +22,14 @@ class Iffieldcondtions(ABC):
 
 # condition interface
 # one condition type record
-class IfCondtions(ABC):
-    Condtion_type: str
-    Input_sequence: Any
-    Input_values: Any
-    input_fields: List[Iffieldcondtions] # input fields instances
-    output_sequece: Any
-    output_fields: List[Iffieldcondtions]
-    Output_value: Any
+class if_condtions(ABC):
+    l_condtion_type: str
+    la_input_sequence: List
+    la_input_values: List
+    la_input_fields: List[if_field_condtions] # input fields instances
+    la_output_sequece: List
+    la_output_fields: List[if_field_condtions]
+    la_Output_values: List
 
     
     def get_condtion_type(self):

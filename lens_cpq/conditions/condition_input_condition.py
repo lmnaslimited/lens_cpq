@@ -1,6 +1,6 @@
-from lens_cpq.condition_class.condition import ClInputFieldConditons
+from lens_cpq.conditions.condition import cl_input_field_conditons
 
-class ClConditionInputfieldCondtions(ClInputFieldConditons):
+class cl_condition_input_field_condtions(cl_input_field_conditons):
     def __init__(self, doctype, field_name, value, condition_field_record):
         super().__init__(doctype, field_name, value, condition_field_record)
     
