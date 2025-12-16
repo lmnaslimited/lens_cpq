@@ -10,6 +10,7 @@
   "field_name",
   "length",
   "field_type",
+  "type",
   "column_break_goyz",
   "input_conversion",
   "sample_input",
@@ -62,13 +63,19 @@
   {
    "fieldname": "column_break_goyz",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "Constant"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-07-06 19:05:54.509105",
+ "modified": "2025-12-07 20:56:59.668940",
  "modified_by": "Administrator",
  "module": "CPQ",
  "name": "Input Sequence",

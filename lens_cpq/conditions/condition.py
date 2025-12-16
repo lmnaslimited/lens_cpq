@@ -21,53 +21,7 @@ class cl_condtions(if_condtions):
     
     def evaluate_output(self):
         pass
-
-
-    # FULL 4-STEP CHAIN RESOLUTION
-    def resolve_condition_chain(self, i_field_name: str, i_value: Any):
-        la_visited = set()
-        la_collected = []
-        l_current_field = i_field_name
-        l_depth = 0  # to be deleted
-
-        print(f"[Engine] Resolving chain for: {i_field_name} → {i_value}")
-
-        while True:
-            la_inp_sequencs = self.ld_model.fetch_input_sequence(l_current_field)
-            if not la_inp_sequencs:
-                break
-
-            # group by parent (each parent = one condition)
-            l_parent = la_inp_sequencs[0]["parent"]
-
-            field_names = [inp["field_name"] for inp in la_inp_sequencs]
-
-            # if parent in visited:
-            #     break
-
-            if l_depth >= 2:
-                break
-
-            la_visited.add(l_parent)
-            l_depth += 1
-
-            if not self.ld_view.is_value_present_in_doc(field_names):
-                continue
-
-            la_out_sequence = self.ld_model.fetch_output_sequence(l_parent)
-            if not la_out_sequence:
-                break
-
-            la_collected.append({
-                "parent": l_parent,
-                "input_records": la_inp_sequencs,
-                "output_records": la_out_sequence
-            })
-
-            # next field from output
-            l_current_field = la_out_sequence[0]["field_name"] #this is not correct we need to do all the fields in output sequence
-
-        return la_collected
+    
 
     # STEP 5–6: Organize Condition Types and Execute in Order
     def execute_conditions(self, ia_chain_data: List[Dict]):

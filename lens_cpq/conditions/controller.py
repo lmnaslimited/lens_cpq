@@ -1,15 +1,10 @@
-from lens_cpq.conditions.condition import ClCondtions
 from lens_cpq.conditions.interface import if_controller
 from typing import List, Union, Dict
-from lens_cpq.conditions.interface import if_condtions
-# Classes in Python names should follow the CapWords (or CamelCase) convention
-class controller(if_controller):
 
-    ld_view_controller: if_controller
-    ld_model_controller: if_controller
-    l_doctype: str
-    l_event: str
-    l_fields: Union[list, str] #one field or array of field
+import frappe
+from collections import deque
+
+class controller(if_controller):
 
     def __init__(self, i_doctype: str, i_event: str, i_fields: Union[list, str]):
         self.l_doctype = i_doctype
@@ -22,22 +17,12 @@ class controller(if_controller):
 
 
     def execute(self):
-        print(f"[Controller] Field changed: {self.l_fields}")
-        ld_condition = ClCondtions(self.l_doctype, self.l_event, self.l_fields, self.ld_view_controller,self.ld_model_controller)
-       
-        la_affected_conditions = ld_condition.resolve_condition_chain(
-            self.l_fields, self.l_event
-        )
-
-        ld_condition.execute_conditions(la_affected_conditions)
+        # print(f"[Controller] Field changed: {self.l_fields}")
+        self.ld_model_controller.execute()
 
     
 class cl_view_controller(controller):
 
-   
-    def __init__(self, i_doctype, i_event, i_fields):
-        super().__init__(i_doctype, i_event, i_fields) 
-        
     def is_sate_changed(self)->bool:
         return True
     
@@ -47,68 +32,122 @@ class cl_view_controller(controller):
     def execute(self):
         print("[ViewController] Executing view logic")
     
-    def set_model_and_view(self, id_view_instance, id_model_instance):
-        self.ld_view_controller = id_view_instance
-        self.ld_model_controller = id_model_instance
-        
 
 class cl_model_controller(controller):
-    la_conditions: List[if_condtions]
+    def execute(self):
+        # print("[ModelController] Executing model logic...")
+        model(self.l_fields).execute()
     
-    def __init__(self, i_doctype, i_event, i_fields):
-        super().__init__(i_doctype, i_event, i_fields)
+
+class model(if_controller):
+    def __init__(self, i_field_name):
+        self.l_field_name = i_field_name
         
     def execute(self):
-        print("[ModelController] Executing model logic...")
-    
-    def set_model_and_view(self, id_view_instance, id_model_instance):
-        self.ld_view_controller = id_view_instance
-        self.ld_model_controller = id_model_instance
+        self.resolve_condition_chain()
+        
+    def resolve_condition_chain(self):
+        la_collected = []
+        la_queue = deque([self.l_field_name])  # Process multiple field names
 
-    # STEP 1: Fetch INPUT SEQUENCE records
-    def fetch_input_sequence(self, i_field_name: str) -> List[Dict]:
-        print(f"[Model] Fetching Input Sequence for: {i_field_name}")
-        if i_field_name == "x_output":
-            return [
-                {"name": "INP-0002", "field_name": "2_input", "parent": "COND-0002"},
-            ]
-        return [
-            {"name": "INP-0001", "field_name": i_field_name, "parent": "COND-0001"},
-        ]
+        while la_queue:
+            l_current_field = la_queue.popleft()
+
+            # 1. Fetch input sequence for the field
+            la_inp_sequence = self.fetch_input_sequence(l_current_field)
+            if not la_inp_sequence:
+                continue
+
+            # Parent is always same in all rows (since filter is by field_name)
+            l_parent = la_inp_sequence[0]["parent"]
+
+            # 2. Fetch output sequence based on parent
+            la_out_sequence = self.fetch_output_sequence(l_parent)
+            if not la_out_sequence:
+                continue
+
+            # 3. Collect the record
+            la_collected.append({
+                "parent": l_parent,
+                "input_sequence": la_inp_sequence,
+                "output_sequence": la_out_sequence,
+                "condition_type": [],   # placeholder (will fill later)
+                "input_value": [],
+                "output_value": []
+            })
+
+            # 4. Add all output field_names to queue for further processing
+            for ld_row in la_out_sequence:
+                l_next_field = ld_row["field_name"]
+                if l_next_field:  # avoid null
+                    la_queue.append(l_next_field)
+
+        # 5. Fetch condition types for ALL parents in collected list
+        la_parents = [ld_record["parent"] for ld_record in la_collected]
+
+        if la_parents:
+            la_conditions = self.fetch_condition_type(la_parents)
+
+            # 6. Attach condition type to the correct parent
+            ld_condition_map = {ld_condition["name"]: ld_condition for ld_condition in la_conditions}
+            for ld_record in la_collected:
+                l_parent_name = ld_record["parent"]
+                if l_parent_name in ld_condition_map:
+                    ld_record["condition_type"] = ld_condition_map[l_parent_name]
+                    la_condition_values = self.fetch_condition_value(l_parent_name)
+
+                    # 7. Fetch input & output values for each condition value
+                    la_input_vals, la_output_vals = [], []
+                    for ld_cond in la_condition_values:
+                        l_cond_name = ld_cond["name"]
+                        la_input_vals.extend(self.fetch_input_value(l_cond_name))
+                        la_output_vals.extend(self.fetch_output_value(l_cond_name))
+
+                    ld_record["input_value"] = la_input_vals
+                    ld_record["output_value"] = la_output_vals
+
+
+        return la_collected
     
-    # STEP 2: Fetch OUTPUT SEQUENCE from parent
+    def fetch_input_sequence(self, i_field_name) -> List[Dict]:
+        la_get_input_sequence = frappe.get_all("Input Sequence",
+                                               filters={"field_name": i_field_name},
+                                               fields=["name","field_name","parent","type"])
+        return la_get_input_sequence
+    
     def fetch_output_sequence(self, i_parent_name: str) -> List[Dict]:
-        print(f"[Model] Fetching Output Sequence for parent: {i_parent_name}")
-        if i_parent_name == "COND-0002":
-            return [
-                {"name": "OUT-0002", "field_name": "x_2_output", "parent": i_parent_name},
-            ]
-        return [
-            {"name": "OUT-0001", "field_name": "x_output", "parent": i_parent_name},
-        ]
-    
-    # STEP 5: Fetch CONDITION TYPE HEADER
+        la_get_output_sequence = frappe.get_all("Output Sequence",
+                                               filters={"parent": i_parent_name},
+                                               fields=["name","field_name","parent","type"])
+        return la_get_output_sequence
+
     def fetch_condition_type(self, ia_parent_names: List[str]) -> List[Dict]:
-        print(f"[Model] Fetching Condition Type for parents: {ia_parent_names}")
+        la_condition_type = frappe.get_list("Condition Type",
+                                            filters={"name": ["in", ia_parent_names]},
+                                            fields=["name", "document_reference", "condition_type", "priority"],
+                                            order_by="priority asc")
         
-        la_headers = []
+        return la_condition_type
+    
+    def fetch_condition_value(self, i_condition_name):
+        la_condition_value = frappe.get_list("Condition Value",
+                                            filters={"condition_type": i_condition_name},
+                                            fields=["name"])
         
-        if "COND-0001" in ia_parent_names:
-            la_headers.append({
-                "name": "COND-0001",
-                "type": "constant",
-                "priority": 1,
-                "depends_on": "COND-0002"
-            })
-        
-        if "COND-0002" in ia_parent_names:
-            la_headers.append({
-                "name": "COND-0002",
-                "type": "constant",
-                "priority": 2
-            })
-        
-        return la_headers
+        return la_condition_value
+    
+    def fetch_input_value(self, ia_condition_value):
+        la_get_input_value = frappe.get_all("Input Condition Value",
+                                               filters={"parent": ia_condition_value},
+                                               fields=["name","field_name","value"])
+        return la_get_input_value
+    
+    def fetch_output_value(self, ia_condition_value):
+        la_get_output_value = frappe.get_all("Output Condition Value",
+                                               filters={"parent": ia_condition_value},
+                                               fields=["name","field_name","value"])
+        return la_get_output_value
+
 
 
 class fc_view_model_factory:
