@@ -31,17 +31,6 @@ class if_condtions(ABC):
     la_output_fields: List[if_field_condtions]
     la_Output_values: List
 
-    
-    def get_condtion_type(self):
-        pass
-    
-    
-    def get_condtion_input_value(self):
-        pass
-
-    
-    def get_condtion_output_value(self):
-        pass
 
     @abstractmethod
     def evaluate_output(self):

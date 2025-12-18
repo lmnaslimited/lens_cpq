@@ -1,3 +1,5 @@
+from lens_cpq.conditions.condition import cl_condtions
+# from lens_cpq.conditions.input_condition_factory import cl_input_field_condition_factory
 from lens_cpq.conditions.interface import if_controller
 from typing import List, Union, Dict
 
@@ -6,10 +8,11 @@ from collections import deque
 
 class controller(if_controller):
 
-    def __init__(self, i_doctype: str, i_event: str, i_fields: Union[list, str]):
+    def __init__(self, i_doctype: str, i_event: str, i_fields: Union[list, str], id_doc: Dict):
         self.l_doctype = i_doctype
         self.l_event = i_event
         self.l_fields = i_fields
+        self.ld_doc = id_doc
     
     def set_model_and_view(self, id_view_instance, id_model_instance):
         self.ld_view_controller = id_view_instance
@@ -18,7 +21,9 @@ class controller(if_controller):
 
     def execute(self):
         # print(f"[Controller] Field changed: {self.l_fields}")
-        self.ld_model_controller.execute()
+        self.la_result = self.ld_model_controller.execute()
+        engine = cl_condtions(self.ld_doc)
+        engine.execute(self.la_result)
 
     
 class cl_view_controller(controller):
@@ -36,7 +41,7 @@ class cl_view_controller(controller):
 class cl_model_controller(controller):
     def execute(self):
         # print("[ModelController] Executing model logic...")
-        model(self.l_fields).execute()
+        return model(self.l_fields).execute()
     
 
 class model(if_controller):
@@ -44,7 +49,7 @@ class model(if_controller):
         self.l_field_name = i_field_name
         
     def execute(self):
-        self.resolve_condition_chain()
+        return self.resolve_condition_chain()
         
     def resolve_condition_chain(self):
         la_collected = []
@@ -139,13 +144,13 @@ class model(if_controller):
     def fetch_input_value(self, ia_condition_value):
         la_get_input_value = frappe.get_all("Input Condition Value",
                                                filters={"parent": ia_condition_value},
-                                               fields=["name","field_name","value"])
+                                               fields=["name","field_name","value", "parent"])
         return la_get_input_value
     
     def fetch_output_value(self, ia_condition_value):
         la_get_output_value = frappe.get_all("Output Condition Value",
                                                filters={"parent": ia_condition_value},
-                                               fields=["name","field_name","value"])
+                                               fields=["name","field_name","value", "parent"])
         return la_get_output_value
 
 
@@ -154,7 +159,7 @@ class fc_view_model_factory:
     _ld_instances = {}
 
     @classmethod
-    def get_controller(cls, i_key, i_doctype, i_event, i_fields):
+    def get_controller(cls, i_key, i_doctype, i_event, i_fields, id_doc):
         """Returns existing instance if available, else creates new one."""
         
         # Check if an instance already exists
@@ -162,17 +167,17 @@ class fc_view_model_factory:
             ld_result = cls._ld_instances[i_key]
             return ld_result
 
-        ld_instance = cls.instantiate_controller(cls, i_key, i_doctype, i_event, i_fields)
+        ld_instance = cls.instantiate_controller(cls, i_key, i_doctype, i_event, i_fields, id_doc)
     
         return ld_instance
     
 
     # function to Instantiate a new controllers
-    def instantiate_controller(cls, i_key, i_doctype, i_event, i_fields):
+    def instantiate_controller(cls, i_key, i_doctype, i_event, i_fields, id_doc):
 
-        ld_instance_controller = controller(i_doctype, i_event, i_fields)
-        ld_instance_model = cl_model_controller(i_doctype,i_event, i_fields)
-        ld_instance_view = cl_view_controller(i_doctype, i_event, i_fields)
+        ld_instance_controller = controller(i_doctype, i_event, i_fields, id_doc)
+        ld_instance_model = cl_model_controller(i_doctype, i_event, i_fields, id_doc)
+        ld_instance_view = cl_view_controller(i_doctype, i_event, i_fields, id_doc)
 
         cls._ld_instances["controller"] = ld_instance_controller
         cls._ld_instances["view_controller"] = ld_instance_model
