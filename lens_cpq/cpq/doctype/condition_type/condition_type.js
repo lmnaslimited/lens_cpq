@@ -16,8 +16,8 @@ frappe.ui.form.on('Condition Type', {
     },
     refresh(frm){
         if(frm.doc.document_reference){
-            fnPopulateFieldOptions(frm, 'input_sequence', 'field_name');
-            fnPopulateFieldOptions(frm, 'output_sequence', 'field_name');
+            fnPopulateFieldOptions(frm, 'input_sequence', 'label');
+            fnPopulateFieldOptions(frm, 'output_sequence', 'label');
         }
     }
 });
@@ -72,10 +72,10 @@ function fnGetMetaData(frm, callback) {
 
 // Generic function to populate field options for child tables
 function fnPopulateFieldOptions(frm, iTableName, iFieldName) {
-    // Get all field_name values already present in the child table to avoid duplicates
+    // Get all label values already present in the child table to avoid duplicates
     const laCurrentRows = frm.doc[iTableName];
     //make an array only with label from the array of dict
-    const laExistingLabels = laCurrentRows.map(idRow => idRow.field_name);
+    const laExistingLabels = laCurrentRows.map(idRow => idRow.label);
     
     //array to store excluded labels from already present in child table rows
     const laOptions = [];
@@ -88,9 +88,9 @@ function fnPopulateFieldOptions(frm, iTableName, iFieldName) {
             // }
         });
 
-        // Update the child table's 'field_name' select options
+        // Update the child table's 'label' select options
         frm.fields_dict[iTableName].grid.update_docfield_property(
-            iFieldName,      // The field inside child table (usually 'field_name')
+            iFieldName,      // The field inside child table (usually 'label')
             'options',     // Property to update
             laOptions // List of options to set
         );
@@ -102,11 +102,12 @@ function fnSetFieldTypeFromLabel(frm, cdt, cdn) {
     //get the rows data
     const idRow = locals[cdt][cdn];
     fnGetMetaData(frm, (idMetaFields) => {
-        //get the fieldtype for the value selected in the field_name
-        const ldMatched = idMetaFields.find(idField => idField.label === idRow.field_name);
+        //get the fieldtype for the value selected in the label
+        const ldMatched = idMetaFields.find(idField => idField.label === idRow.label);
         if (ldMatched) {
             // Set the field_type in the child row
             frappe.model.set_value(cdt, cdn, 'field_type', ldMatched.fieldtype);
+            frappe.model.set_value(cdt, cdn, 'field_name', ldMatched.fieldname);
         }
     });
 }
@@ -115,10 +116,10 @@ function fnSetFieldTypeFromLabel(frm, cdt, cdn) {
 frappe.ui.form.on('Input Sequence', {
     input_sequence_add(frm, cdt, cdn) {
         // Populate options when a new row is added
-        fnPopulateFieldOptions(frm, 'input_sequence', 'field_name');
+        fnPopulateFieldOptions(frm, 'input_sequence', 'label');
     },
-    field_name(frm, cdt, cdn) {
-        // Set field_type when a field_name is selected
+    label(frm, cdt, cdn) {
+        // Set field_type and field_name when a label is selected
         fnSetFieldTypeFromLabel(frm, cdt, cdn);
     }
 });
@@ -127,10 +128,10 @@ frappe.ui.form.on('Input Sequence', {
 frappe.ui.form.on('Output Sequence', {
     output_sequence_add(frm, cdt, cdn) {
         // Populate options when a new row is added
-        fnPopulateFieldOptions(frm, 'output_sequence', 'field_name');
+        fnPopulateFieldOptions(frm, 'output_sequence', 'label');
     },
-    field_name(frm, cdt, cdn) {
-        // Set field_type when a field_name is selected
+    label(frm, cdt, cdn) {
+        // Set field_type and field_name when a label is selected
         fnSetFieldTypeFromLabel(frm, cdt, cdn);
     }
 });

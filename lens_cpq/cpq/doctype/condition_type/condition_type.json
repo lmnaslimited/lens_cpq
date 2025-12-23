@@ -11,9 +11,6 @@
   "naming_series",
   "column_break_dgvy",
   "enable",
-  "is_value_based",
-  "is_formula_based",
-  "is_api_based",
   "priority",
   "section_break_zttr",
   "input_sequence",
@@ -54,24 +51,6 @@
    "label": "Enable"
   },
   {
-   "default": "0",
-   "fieldname": "is_value_based",
-   "fieldtype": "Check",
-   "label": "Is Value Based"
-  },
-  {
-   "default": "0",
-   "fieldname": "is_formula_based",
-   "fieldtype": "Check",
-   "label": "Is Formula Based"
-  },
-  {
-   "default": "0",
-   "fieldname": "is_api_based",
-   "fieldtype": "Check",
-   "label": "Is API Based"
-  },
-  {
    "fieldname": "section_break_zttr",
    "fieldtype": "Section Break"
   },
@@ -101,7 +80,7 @@
    "link_fieldname": "condition_type"
   }
  ],
- "modified": "2025-12-07 21:24:50.428689",
+ "modified": "2025-12-19 15:02:02.245377",
  "modified_by": "Administrator",
  "module": "CPQ",
  "name": "Condition Type",

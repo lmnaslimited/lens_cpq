@@ -20,5 +20,5 @@ class cl_constant_input_field_condtions:
     def evaluate(self, ld_input, doc):
         field = ld_input["field_name"]
         expected = ld_input["value"]
-        return doc.get(field) == expected
+        return doc.get(field) == expected #here we want field_name but the input value store the label so this validation will be failed
     
