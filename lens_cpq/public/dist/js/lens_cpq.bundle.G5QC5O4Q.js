@@ -17,9 +17,7 @@
                 doc.doctype,
                 doc.name,
                 ldOutput.field_name,
-                ldOutput.value,
-                null,
-                true
+                ldOutput.value
               );
             }
           }
@@ -28,4 +26,4 @@
     });
   });
 })();
-//# sourceMappingURL=lens_cpq.bundle.4I4L7YHJ.js.map
+//# sourceMappingURL=lens_cpq.bundle.G5QC5O4Q.js.map

@@ -84,7 +84,9 @@ function fnPopulateFieldOptions(frm, iTableName, iFieldName) {
     fnGetMetaData(frm, (iaMetaFields) => {
         iaMetaFields.forEach(field => {
             // if (!laExistingLabels.includes(field.label)) {
+            if(field.label){
                 laOptions.push(field.label);
+            }
             // }
         });
 

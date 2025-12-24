@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "format:COND-VAL-{####}",
  "creation": "2025-07-06 18:18:35.826071",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -48,10 +49,11 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-12-19 15:02:36.490784",
+ "modified": "2025-12-24 12:17:08.242167",
  "modified_by": "Administrator",
  "module": "CPQ",
  "name": "Condition Value",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
