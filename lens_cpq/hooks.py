@@ -27,7 +27,7 @@ app_license = "mit"
 # include js, css files in header of desk.html
 # app_include_css = "/assets/lens_cpq/css/lens_cpq.css"
 # app_include_js = "/assets/lens_cpq/js/lens_cpq.js"
-
+app_include_js = "lens_cpq.bundle.js"
 # include js, css files in header of web template
 # web_include_css = "/assets/lens_cpq/css/lens_cpq.css"
 # web_include_js = "/assets/lens_cpq/js/lens_cpq.js"

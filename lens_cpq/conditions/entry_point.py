@@ -10,6 +10,6 @@ def start_condition(doctype, field_name, doc):
         doc =  json.loads(doc)
     # print("################## Starting Condition Controller Test #####################")
     controller = fc_view_model_factory.get_controller("controller",doctype, "on_change", field_name)
-    controller.execute(doc)
+    return controller.execute(doc)
     
     # print("################## End Test ###############################")

@@ -23,7 +23,8 @@ class controller(if_controller):
         self.la_result = self.ld_model_controller.execute()
         lo_engine = cl_condtions(id_doc)
         la_output = lo_engine.execute(self.la_result)
-        self.ld_view_controller.execute(la_output, id_doc)
+        # self.ld_view_controller.execute(la_output, id_doc)
+        return la_output
         
 
     
