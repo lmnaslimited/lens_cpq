@@ -280,3 +280,11 @@ fixtures = [
 treeviews = [
 	"Chart of Design",
 ]
+
+extend_bootinfo = [
+     "lens_cpq.cpq.doctype.condition_type.condition_type.add_ct_doctypes"
+ ]
+
+
+
+

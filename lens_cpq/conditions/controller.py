@@ -89,7 +89,7 @@ class model(if_controller):
                 "input_sequence": la_inp_sequence,
                 "output_sequence": la_out_sequence,
                 "condition_type": {},
-                "rules": []     # 🔥 IMPORTANT CHANGE
+                "rules": []     # IMPORTANT CHANGE
             })
 
             for ld_row in la_out_sequence:
