@@ -1,2 +1,0 @@
-(()=>{$.each(frappe.boot.condition_type_doctypes,function(c,t){frappe.model.on(t,"*",function(n,i,o){frappe.call({method:"lens_cpq.conditions.entry_point.start_condition",args:{doctype:t,field_name:n,doc:o},callback:function(a){let l=a.message;for(let p of l)for(let e of p.outputs||[])frappe.model.set_value(o.doctype,o.name,e.field_name,e.value,null,!0)}})})});})();
-//# sourceMappingURL=lens_cpq.bundle.3AZGHCZM.js.map

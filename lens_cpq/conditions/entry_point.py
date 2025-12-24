@@ -9,7 +9,9 @@ def start_condition(doctype, field_name, doc):
     if isinstance(doc, str):
         doc =  json.loads(doc)
     # print("################## Starting Condition Controller Test #####################")
-    controller = fc_view_model_factory.get_controller("controller",doctype, "on_change", field_name)
-    return controller.execute(doc)
+    lo_controller = fc_view_model_factory.get_controller("controller",doctype, "on_change", field_name)
+    la_output = lo_controller.execute(doc)
+    print(la_output)
+    return la_output
     
     # print("################## End Test ###############################")
