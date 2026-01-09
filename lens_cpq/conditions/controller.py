@@ -20,9 +20,9 @@ class controller(if_controller):
 
     def execute(self, id_doc: Dict):
         # print(f"[Controller] Field changed: {self.l_fields}")
-        self.la_result = self.ld_model_controller.execute()
+        la_result = self.ld_model_controller.execute()
         lo_engine = cl_condtions(id_doc)
-        la_output = lo_engine.execute(self.la_result)
+        la_output = lo_engine.execute(la_result)
         # self.ld_view_controller.execute(la_output, id_doc)
         return la_output
         
