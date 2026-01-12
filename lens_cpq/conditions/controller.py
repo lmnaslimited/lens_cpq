@@ -182,11 +182,11 @@ class fc_view_model_factory:
     @classmethod
     def get_controller(cls, i_key, i_doctype, i_event, i_fields):
         """Returns existing instance if available, else creates new one."""
-        
+        # this returning the local class but not updating the self
         # Check if an instance already exists
-        if i_key in cls._ld_instances:
-            ld_result = cls._ld_instances[i_key]
-            return ld_result
+        # if i_key in cls._ld_instances:
+        #     ld_result = cls._ld_instances[i_key]
+        #     return ld_result
 
         ld_instance = cls.instantiate_controller(cls, i_key, i_doctype, i_event, i_fields)
     
